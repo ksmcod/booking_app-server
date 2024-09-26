@@ -29,6 +29,11 @@ export const githubStrategy = (passport: PassportStatic) => {
             },
           });
 
+          if (user) {
+            // return done(new Error("This email already exists"), null);
+            throw new Error("This email already exists!");
+          }
+
           if (!user) {
             // If user doesn't exist, create new one
             user = await db.user.create({

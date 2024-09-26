@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import "dotenv/config";
@@ -37,6 +37,15 @@ app.use("/api/auth", authRoutes);
 
 // Configure routes
 app.use("/api/users", userRoutes);
+
+// app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+//   console.log("GLOBAL ERROR MAN!");
+
+//   if (err) {
+//     console.log("IF -> GLOBAL ERROR MAN");
+//   }
+//   res.status(500).json({ message: "A server error occured!" });
+// });
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);

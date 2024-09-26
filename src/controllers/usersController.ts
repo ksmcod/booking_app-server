@@ -26,7 +26,7 @@ export async function registerController(req: Request, res: Response) {
       .json({ message: "Please fill all required fields!" });
   }
 
-  if (password.length <= 8) {
+  if (password.length < 8) {
     return res
       .status(400)
       .json({ message: "Password should be at least 8 characters long!" });
