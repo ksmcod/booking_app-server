@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import db from "../utils/db";
 import setToken from "../utils/setToken";
+import createToken from "../utils/createToken";
 
 interface RegisterRequestBody {
   email: string;
@@ -52,7 +53,8 @@ export async function registerController(req: Request, res: Response) {
       },
     });
 
-    setToken({ userId: newUser.id }, res);
+    const token = createToken({ userId: newUser.id });
+    setToken(token, res);
     res.status(201).json(newUser);
   } catch (error) {
     console.log(error);
@@ -86,7 +88,8 @@ export async function loginController(req: Request, res: Response) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    setToken({ userId: user.id }, res);
+    const token = createToken({ userId: user.id });
+    setToken(token, res);
 
     res.status(200).json(user);
   } catch (error) {
