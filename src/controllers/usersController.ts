@@ -3,20 +3,32 @@ import bcrypt from "bcrypt";
 import db from "../utils/db";
 import setToken from "../utils/setToken";
 
-interface RequestBody {
+interface RegisterRequestBody {
   email: string;
   firstName: string;
   lastName: string;
   password: string;
 }
 
-export async function register(req: Request, res: Response) {
-  const { email, firstName, lastName, password }: RequestBody = req.body;
+interface LoginRequestBody {
+  email: string;
+  password: string;
+}
+
+export async function registerController(req: Request, res: Response) {
+  const { email, firstName, lastName, password }: RegisterRequestBody =
+    req.body;
 
   if (!email || !firstName || !lastName || !password) {
     return res
       .status(400)
       .json({ message: "Please fill all required fields!" });
+  }
+
+  if (password.length <= 8) {
+    return res
+      .status(400)
+      .json({ message: "Password should be at least 8 characters long!" });
   }
 
   try {
@@ -45,5 +57,40 @@ export async function register(req: Request, res: Response) {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Something went wrong!" });
+  }
+}
+
+export async function loginController(req: Request, res: Response) {
+  const { email, password }: LoginRequestBody = req.body;
+
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ message: "Please fill all required fields!" });
+  }
+
+  try {
+    const user = await db.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (!user || !user.password) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    setToken({ userId: user.id }, res);
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "An error occured!" });
   }
 }
