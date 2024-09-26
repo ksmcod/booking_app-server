@@ -9,7 +9,9 @@ export const githubStrategy = (passport: PassportStatic) => {
       {
         clientID: process.env.GITHUB_CLIENT_ID as string,
         clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
-        callbackURL: "http://localhost:8080/api/auth/github/callback",
+        callbackURL: `${process.env.SERVER_URL as string}/auth/github/callback`,
+        // callbackURL: "http://localhost:8080/api/auth/github/callback",
+        scope: ["user:email"],
       },
       async (
         accessToken: string,
@@ -18,6 +20,8 @@ export const githubStrategy = (passport: PassportStatic) => {
         done: any
       ) => {
         try {
+          //   console.log("Profile is: ", profile);
+
           // Check if email is already registered
           let user = await db.user.findUnique({
             where: {
