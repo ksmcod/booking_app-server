@@ -1,9 +1,10 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import "dotenv/config";
+import userRoutes from "./routes/userRoutes";
 
 const app = express();
-const port = 8080;
+const PORT = 8080;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -13,6 +14,10 @@ app.get("/api/test", (req: Request, res: Response) => {
   res.json({ message: "Hello from express endpoint!" });
 });
 
-app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
+// Configure routes
+
+app.use("/api/users", userRoutes);
+
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`);
 });
