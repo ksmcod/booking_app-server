@@ -12,3 +12,22 @@ datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
+
+// model User {
+//   email String @unique
+// }
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  firstName String? //To be used with credentials authentication
+  lastName  String? // To be used with credentials authentication
+  name      String? // Name to be used with OAuth authentication
+  password  String? // Null if using OAuth
+  image     String? // Optional profile picture
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // OAuth Fields
+  provider   String? // e.g., 'google', 'github', etc.
+  providerId String? // OAuth provider's unique user ID
+}
