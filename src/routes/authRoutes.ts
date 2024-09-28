@@ -1,11 +1,14 @@
 import { NextFunction, Request, Response, Router } from "express";
 import passport from "passport";
 import setToken from "../utils/setToken";
+import { loginController } from "../controllers/usersController";
 
 const authRoutes = Router();
 
-// GITHUB AUTHENTICATION
+// Credentials authentication
+authRoutes.post("/login", loginController);
 
+// GITHUB AUTHENTICATION
 // Redirect to Github for authentication
 authRoutes.get(
   "/github",

@@ -5,7 +5,7 @@ import "dotenv/config";
 import userRoutes from "./routes/userRoutes";
 import passport from "passport";
 import { githubStrategy } from "./config/passport";
-import authRoutes from "./routes/auth";
+import authRoutes from "./routes/authRoutes";
 
 const app = express();
 const PORT = 8080;
@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Configure CORS middleware
-app.use(cors({}));
+app.use(cors({ credentials: true }));
 
 // Configure Passport middleware
 app.use(passport.initialize());
@@ -32,7 +32,7 @@ app.get("/api/test", (req: Request, res: Response) => {
   res.json({ message: "Hello from express endpoint!" });
 });
 
-// Configure auth routes
+// Configure authentication routes
 app.use("/api/auth", authRoutes);
 
 // Configure routes
