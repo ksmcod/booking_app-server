@@ -47,8 +47,7 @@ export async function registerController(req: Request, res: Response) {
     const newUser = await db.user.create({
       data: {
         email,
-        firstName,
-        lastName,
+        name: `${firstName} ${lastName}`,
         password: hashedPassword,
       },
     });
