@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Configure CORS middleware
-app.use(cors({ credentials: true }));
+app.use(cors({ credentials: true, origin: process.env.CLIENT_URL }));
 
 // Configure Passport middleware
 app.use(passport.initialize());
