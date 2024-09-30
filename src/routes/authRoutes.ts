@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import passport from "passport";
 import setToken from "../utils/setToken";
-import { loginController } from "../controllers/usersController";
+import { loginController } from "../controllers/authController";
 
 const authRoutes = Router();
 
@@ -33,6 +33,9 @@ authRoutes.get(
     }
   }
 );
+
+// Check auth status
+authRoutes.get("/user");
 
 // Error middleware
 authRoutes.use((err: any, req: Request, res: Response, next: NextFunction) => {
