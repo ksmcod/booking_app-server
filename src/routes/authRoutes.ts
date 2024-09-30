@@ -1,13 +1,20 @@
 import { NextFunction, Request, Response, Router } from "express";
 import passport from "passport";
 import setToken from "../utils/setToken";
-import { loginController } from "../controllers/authController";
+import { loginController, verifyAuth } from "../controllers/authController";
+import authMiddleware from "../middleware/authMiddleware";
 
 const authRoutes = Router();
 
 // Credentials authentication
 authRoutes.post("/login", loginController);
 
+// Verify auth status
+authRoutes.get("/check", authMiddleware, verifyAuth);
+
+// ========================================================================================
+// ==================================== OAUTH =============================================
+// ========================================================================================
 // GITHUB AUTHENTICATION
 // Redirect to Github for authentication
 authRoutes.get(
@@ -33,9 +40,6 @@ authRoutes.get(
     }
   }
 );
-
-// Check auth status
-authRoutes.get("/user");
 
 // Error middleware
 authRoutes.use((err: any, req: Request, res: Response, next: NextFunction) => {

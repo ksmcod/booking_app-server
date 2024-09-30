@@ -14,6 +14,9 @@ const PORT = 8080;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Configure cookie-parser middleware
+app.use(cookieParser());
+
 // Configure CORS middleware
 app.use(cors({ credentials: true, origin: process.env.CLIENT_URL }));
 

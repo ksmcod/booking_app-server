@@ -1,14 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
+import db from "../utils/db";
+import { User } from "@prisma/client";
+
 interface Payload {
   userId: string;
-}
-
-export interface AuthenticatedRequest extends Request {
-  user?: {
-    userId: string;
-  };
 }
 
 export default async function authMiddleware(
@@ -16,10 +13,10 @@ export default async function authMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  const token = req.cookies.user_token;
+  const token = req.cookies.user_token as string;
 
   if (!token) {
-    res.sendStatus(401);
+    return res.sendStatus(401);
   }
 
   try {
@@ -28,8 +25,16 @@ export default async function authMiddleware(
       process.env.JWT_SECRET as string
     ) as Payload;
 
-    // Attach the userId to the request object
-    req.user = { userId: decoded.userId };
+    const user = await db.user.findUnique({
+      where: { id: decoded.userId },
+    });
+
+    if (!user) {
+      res.status(401).json({ message: "Unauthorized" });
+    }
+
+    // Attach the user object to the request object
+    req.user = user as User;
 
     next();
   } catch (error: any) {

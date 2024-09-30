@@ -6,6 +6,6 @@ interface Payload {
 
 export default function createToken(payload: Payload) {
   return jwt.sign(payload, process.env.JWT_SECRET as string, {
-    expiresIn: 60,
+    expiresIn: "2 days",
   });
 }
