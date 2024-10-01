@@ -45,9 +45,15 @@ authRoutes.get(
 authRoutes.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err) {
     // return res.status(500).redirect(process.env.CLIENT_URL as string);
-    return res
-      .status(500)
-      .json({ message: err.message ?? "Uh oh, seems like something happened" });
+    // return res
+    //   .status(500)
+    //   .json({ message: err.message ?? "Uh oh, seems like something happened" });
+
+    res.redirect(
+      `${process.env.CLIENT_URL as string}/register?error=${
+        err.message ?? "An error occured"
+      }`
+    );
   }
   next();
 });

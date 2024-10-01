@@ -16,7 +16,8 @@ export default async function authMiddleware(
   const token = req.cookies.user_token as string;
 
   if (!token) {
-    return res.sendStatus(401);
+    // return res.sendStatus(401);
+    return res.status(401).json({ message: "Unauthorized" });
   }
 
   try {
@@ -30,7 +31,8 @@ export default async function authMiddleware(
     });
 
     if (!user) {
-      res.status(401).json({ message: "Unauthorized" });
+      return res.status(401).json({ message: "Unauthorized" });
+      // res.sendStatus(401);
     }
 
     // Attach the user object to the request object
@@ -40,5 +42,6 @@ export default async function authMiddleware(
   } catch (error: any) {
     console.log("JWT verification error: ", error);
     res.status(401).json({ message: error.message ?? "Invalid token" });
+    // res.sendStatus(401);
   }
 }

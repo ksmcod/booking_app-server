@@ -31,7 +31,7 @@ export const githubStrategy = (passport: PassportStatic) => {
 
           if (user) {
             // return done(new Error("This email already exists"), null);
-            throw new Error("This email already exists!");
+            throw new Error("This email is already registered");
           }
 
           if (!user) {
