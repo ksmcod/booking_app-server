@@ -1,9 +1,11 @@
-import express, { NextFunction, Request, Response } from "express";
+import express, { Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import morgan from "morgan";
 import "dotenv/config";
-import userRoutes from "./routes/userRoutes";
 import passport from "passport";
+
+import userRoutes from "./routes/userRoutes";
 import { githubStrategy } from "./config/passport";
 import authRoutes from "./routes/authRoutes";
 
@@ -19,6 +21,9 @@ app.use(cookieParser());
 
 // Configure CORS middleware
 app.use(cors({ credentials: true, origin: process.env.CLIENT_URL }));
+
+// Configure morgan middleware for logging
+app.use(morgan("dev"));
 
 // Configure Passport middleware
 app.use(passport.initialize());
