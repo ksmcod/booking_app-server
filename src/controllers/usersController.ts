@@ -50,7 +50,9 @@ export async function registerController(req: Request, res: Response) {
 
     const token = createToken({ userId: newUser.id });
     setToken(token, res);
-    res.status(201).json(newUser);
+    res
+      .status(201)
+      .json({ name: newUser.name, email: newUser.email, image: newUser.image });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Something went wrong!" });

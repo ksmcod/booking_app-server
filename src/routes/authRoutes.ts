@@ -1,7 +1,11 @@
 import { NextFunction, Request, Response, Router } from "express";
 import passport from "passport";
 import setToken from "../utils/setToken";
-import { loginController, verifyAuth } from "../controllers/authController";
+import {
+  loginController,
+  getAuthUser,
+  checkToken,
+} from "../controllers/authController";
 import authMiddleware from "../middleware/authMiddleware";
 
 const authRoutes = Router();
@@ -9,8 +13,11 @@ const authRoutes = Router();
 // Credentials authentication
 authRoutes.post("/login", loginController);
 
-// Verify auth status
-authRoutes.get("/check", authMiddleware, verifyAuth);
+// Get current user info
+authRoutes.get("/get-user", authMiddleware, getAuthUser);
+
+//
+authRoutes.get("/check-token", authMiddleware, checkToken);
 
 // ========================================================================================
 // ==================================== OAUTH =============================================
