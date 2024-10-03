@@ -29,7 +29,7 @@ export const githubStrategy = (passport: PassportStatic) => {
             },
           });
 
-          if (user) {
+          if (user && user.password) {
             // return done(new Error("This email already exists"), null);
             throw new Error("This email is already registered");
           }

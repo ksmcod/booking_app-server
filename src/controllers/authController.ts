@@ -73,3 +73,9 @@ export async function checkToken(req: Request, res: Response) {
   const userId = req.user;
   res.status(200).json({ userId });
 }
+
+// Logout controller function
+export async function logout(req: Request, res: Response) {
+  res.clearCookie("user_token");
+  res.status(200).json({ message: "Logout successful" });
+}

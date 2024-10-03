@@ -5,6 +5,7 @@ import {
   loginController,
   getAuthUser,
   checkToken,
+  logout,
 } from "../controllers/authController";
 import authMiddleware from "../middleware/authMiddleware";
 
@@ -16,8 +17,11 @@ authRoutes.post("/login", loginController);
 // Get current user info
 authRoutes.get("/get-user", authMiddleware, getAuthUser);
 
-//
+// Check validity of token
 authRoutes.get("/check-token", authMiddleware, checkToken);
+
+// Logout
+authRoutes.post("/logout", authMiddleware, logout);
 
 // ========================================================================================
 // ==================================== OAUTH =============================================
@@ -57,7 +61,7 @@ authRoutes.use((err: any, req: Request, res: Response, next: NextFunction) => {
     //   .json({ message: err.message ?? "Uh oh, seems like something happened" });
 
     res.redirect(
-      `${process.env.CLIENT_URL as string}/register?error=${
+      `${process.env.CLIENT_URL as string}/login?error=${
         err.message ?? "An error occured"
       }`
     );
