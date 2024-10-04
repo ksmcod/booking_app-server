@@ -21,7 +21,7 @@ authRoutes.get("/get-user", authMiddleware, getAuthUser);
 authRoutes.get("/check-token", authMiddleware, checkToken);
 
 // Logout
-authRoutes.post("/logout", authMiddleware, logout);
+authRoutes.post("/logout", logout);
 
 // ========================================================================================
 // ==================================== OAUTH =============================================

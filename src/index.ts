@@ -5,6 +5,8 @@ import morgan from "morgan";
 import "dotenv/config";
 import passport from "passport";
 
+import db from "./utils/db";
+
 import userRoutes from "./routes/userRoutes";
 import { githubStrategy } from "./config/passport";
 import authRoutes from "./routes/authRoutes";
@@ -56,5 +58,11 @@ app.use("/api/users", userRoutes);
 // });
 
 app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
+  db.$connect()
+    .then(() => {
+      console.log(`Listening on port ${PORT}`);
+    })
+    .catch((error) => {
+      console.log("ERROR CONNECTING TO DB: ", error);
+    });
 });
