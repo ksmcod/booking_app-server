@@ -5,6 +5,8 @@ import morgan from "morgan";
 import "dotenv/config";
 import passport from "passport";
 
+import path from "path";
+
 import db from "./utils/db";
 
 import userRoutes from "./routes/userRoutes";
@@ -33,9 +35,12 @@ app.use(passport.initialize());
 // Setup Passport strategies
 githubStrategy(passport);
 
+// Configure static assets
+app.use(express.static(path.join(__dirname, "..", "..", "client", "dist")));
+
 // Routing begins
 app.get("/client", (req: Request, res: Response) => {
-  res.redirect(process.env.CLIENT_URL as string);
+  res.redirect((process.env.CLIENT_URL as string) || "/");
 });
 
 app.get("/api/test", (req: Request, res: Response) => {
@@ -60,9 +65,10 @@ app.use("/api/users", userRoutes);
 app.listen(PORT, () => {
   db.$connect()
     .then(() => {
+      console.log("Connected to: ", process.env.DATABASE_URL);
       console.log(`Listening on port ${PORT}`);
     })
     .catch((error) => {
-      console.log("ERROR CONNECTING TO DB: ", error);
+      console.log("ERROR CONNECTING TO DB");
     });
 });

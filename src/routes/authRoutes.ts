@@ -60,11 +60,15 @@ authRoutes.use((err: any, req: Request, res: Response, next: NextFunction) => {
     //   .status(500)
     //   .json({ message: err.message ?? "Uh oh, seems like something happened" });
 
-    res.redirect(
-      `${process.env.CLIENT_URL as string}/login?error=${
-        err.message ?? "An error occured"
-      }`
-    );
+    if (process.env.CLIENT_URL) {
+      res.redirect(
+        `${process.env.CLIENT_URL}/login?error=${
+          err.message ?? "An error occured"
+        }`
+      );
+    } else {
+      res.redirect(`/login?error${err.message ?? "An error occured"}`);
+    }
   }
   next();
 });

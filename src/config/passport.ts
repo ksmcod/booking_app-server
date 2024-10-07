@@ -9,7 +9,9 @@ export const githubStrategy = (passport: PassportStatic) => {
       {
         clientID: process.env.GITHUB_CLIENT_ID as string,
         clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
-        callbackURL: `${process.env.SERVER_URL as string}/auth/github/callback`,
+        callbackURL: `${
+          process.env.SERVER_URL || "http://localhost:8080"
+        }/auth/github/callback`,
         // callbackURL: "http://localhost:8080/api/auth/github/callback",
         scope: ["user:email"],
       },
