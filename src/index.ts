@@ -36,7 +36,7 @@ app.use(passport.initialize());
 githubStrategy(passport);
 
 // Configure static assets
-app.use(express.static(path.join(__dirname, "..", "..", "client", "dist")));
+app.use(express.static(path.join(__dirname, "..", "client", "out")));
 
 // Routing begins
 app.get("/client", (req: Request, res: Response) => {
