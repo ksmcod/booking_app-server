@@ -4,6 +4,7 @@ import cors from "cors";
 import morgan from "morgan";
 import "dotenv/config";
 import passport from "passport";
+import { v2 as cloudinary } from "cloudinary";
 
 import path from "path";
 
@@ -15,6 +16,13 @@ import authRoutes from "./routes/authRoutes";
 
 const app = express();
 const PORT = 8080;
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 // Configure express middleware
 app.use(express.urlencoded({ extended: true }));
@@ -36,7 +44,7 @@ app.use(passport.initialize());
 githubStrategy(passport);
 
 // Configure static assets
-app.use(express.static(path.join(__dirname, "..", "client", "out")));
+// app.use(express.static(path.join(__dirname, "..", "client", "out")));
 
 // Routing begins
 app.get("/client", (req: Request, res: Response) => {
@@ -65,7 +73,7 @@ app.use("/api/users", userRoutes);
 app.listen(PORT, () => {
   db.$connect()
     .then(() => {
-      console.log("Connected to: ", process.env.DATABASE_URL);
+      // console.log("Connected to: ", process.env.DATABASE_URL);
       console.log(`Listening on port ${PORT}`);
     })
     .catch((error) => {
