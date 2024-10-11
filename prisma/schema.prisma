@@ -19,13 +19,36 @@ datasource db {
 model User {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   email     String   @unique
-  name      String // Name to be used with OAuth authentication
+  name      String
   password  String? // Null if using OAuth
   image     String? // Optional profile picture
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  hotels Hotel[]
+
   // OAuth Fields
   provider   String? // e.g., 'google', 'github', etc.
   providerId String? // OAuth provider's unique user ID
+}
+
+model Hotel {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  city        String
+  country     String
+  description String
+  type        String
+  adultCount  Int
+  childCount  Int
+  facilities  String[]
+  price       Float
+  starRating  Int
+  imageUrls   String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId String @db.ObjectId
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

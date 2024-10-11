@@ -13,6 +13,7 @@ import db from "./utils/db";
 import userRoutes from "./routes/userRoutes";
 import { githubStrategy } from "./config/passport";
 import authRoutes from "./routes/authRoutes";
+import myHotelRoutes from "./routes/myHotelRoutes";
 
 const app = express();
 const PORT = 8080;
@@ -60,6 +61,9 @@ app.use("/api/auth", authRoutes);
 
 // Configure routes
 app.use("/api/users", userRoutes);
+
+// Configure my-hotel routes
+app.use("/api/my-hotels", myHotelRoutes);
 
 // app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 //   console.log("GLOBAL ERROR MAN!");
