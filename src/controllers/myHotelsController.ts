@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import cloudinary from "cloudinary";
 
 import db from "../utils/db";
-import { HotelBodyType } from "../middleware/hotelMiddleware";
+import { HotelBodyType } from "../middleware/hotelUploadMiddleware";
 
 export async function createHotel(req: Request, res: Response) {
   try {

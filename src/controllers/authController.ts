@@ -73,7 +73,7 @@ export async function getAuthUser(req: Request, res: Response) {
 
 // Check token validity
 export async function checkToken(req: Request, res: Response) {
-  const userId = req.userId;
+  const userId = req.userId as string;
 
   res.status(200).json({ userId });
 }
