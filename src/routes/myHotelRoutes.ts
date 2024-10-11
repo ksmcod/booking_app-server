@@ -1,6 +1,7 @@
 import { Router } from "express";
 import multer from "multer";
 import { createHotel } from "../controllers/myHotelsController";
+import hotelMiddleware from "../middleware/hotelMiddleware";
 
 const myHotelRoutes = Router();
 const storage = multer.memoryStorage();
@@ -13,6 +14,11 @@ const upload = multer({
 });
 
 // /api/my-hotels
-myHotelRoutes.post("/", upload.array("imageFiles", 5), createHotel);
+myHotelRoutes.post(
+  "/",
+  hotelMiddleware,
+  upload.array("imageFiles", 5),
+  createHotel
+);
 
 export default myHotelRoutes;
