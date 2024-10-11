@@ -2,6 +2,7 @@ import { Router } from "express";
 import multer from "multer";
 import { createHotel } from "../controllers/myHotelsController";
 import hotelMiddleware from "../middleware/hotelMiddleware";
+import authMiddleware from "../middleware/authMiddleware";
 
 const myHotelRoutes = Router();
 const storage = multer.memoryStorage();
@@ -16,6 +17,7 @@ const upload = multer({
 // /api/my-hotels
 myHotelRoutes.post(
   "/",
+  authMiddleware,
   hotelMiddleware,
   upload.array("imageFiles", 5),
   createHotel

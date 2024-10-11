@@ -1,7 +1,7 @@
-declare global {
-  namespace Express {
-    interface Request {
-      user?: string;
-    }
+import { Request } from "express";
+
+declare module "express" {
+  export interface Request {
+    userId?: string;
   }
 }

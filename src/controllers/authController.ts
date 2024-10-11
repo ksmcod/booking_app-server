@@ -51,11 +51,16 @@ export async function loginController(req: Request, res: Response) {
 
 // GET info of authenticated user
 export async function getAuthUser(req: Request, res: Response) {
-  const userId = req.user as string;
+  const userId = req.userId;
 
   const user = await db.user.findUnique({
     where: {
       id: userId,
+    },
+    select: {
+      name: true,
+      email: true,
+      image: true,
     },
   });
 
@@ -63,14 +68,13 @@ export async function getAuthUser(req: Request, res: Response) {
     return res.status(401).send({ message: "Unauthorized" });
   }
 
-  res
-    .status(200)
-    .json({ name: user.name, email: user.email, image: user.image });
+  res.status(200).json(user);
 }
 
 // Check token validity
 export async function checkToken(req: Request, res: Response) {
-  const userId = req.user;
+  const userId = req.userId;
+
   res.status(200).json({ userId });
 }
 

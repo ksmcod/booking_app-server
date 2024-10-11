@@ -4,7 +4,7 @@ import { NextFunction, Request, Response } from "express";
 
 import { Hotel } from "@prisma/client";
 
-type BodyType = Omit<
+export type HotelBodyType = Omit<
   Hotel,
   "id" | "imageUrls" | "createdAt" | "updatedAt" | "userId"
 >;
@@ -14,7 +14,7 @@ export default function hotelMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  const body: BodyType = req.body;
+  const body: HotelBodyType = req.body;
 
   if (
     !body.name ||
@@ -23,7 +23,7 @@ export default function hotelMiddleware(
     !body.description ||
     !body.type ||
     !body.adultCount ||
-    !body.childCount ||
+    !body.childrenCount ||
     !body.facilities ||
     !body.price ||
     !body.starRating

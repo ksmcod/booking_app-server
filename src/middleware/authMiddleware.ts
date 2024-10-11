@@ -1,8 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
-import db from "../utils/db";
-import { User } from "@prisma/client";
 import { TokenPayload } from "../utils/createToken";
 
 export default async function authMiddleware(
@@ -35,7 +33,7 @@ export default async function authMiddleware(
     // // Attach the user object to the request object
     // req.user = user as User;
 
-    req.user = decoded.userId;
+    req.userId = decoded.userId;
 
     next();
   } catch (error: any) {

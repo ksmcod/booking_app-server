@@ -1,8 +1,25 @@
 import { Request, Response } from "express";
 import cloudinary from "cloudinary";
 
+import db from "../utils/db";
+import { HotelBodyType } from "../middleware/hotelMiddleware";
+
 export async function createHotel(req: Request, res: Response) {
   try {
+    const userId = req.userId as string;
+    const {
+      name,
+      city,
+      country,
+      description,
+      type,
+      facilities,
+      adultCount,
+      childrenCount,
+      price,
+      starRating,
+    }: HotelBodyType = req.body;
+
     const imageFiles = req.files as Express.Multer.File[];
 
     const uploadPromises = imageFiles.map(async (image) => {
@@ -16,7 +33,25 @@ export async function createHotel(req: Request, res: Response) {
     });
 
     const imageUrls = await Promise.all(uploadPromises);
-    res.status(200).json(imageUrls);
+
+    const newHotel = await db.hotel.create({
+      data: {
+        name,
+        city,
+        country,
+        description,
+        type,
+        facilities,
+        adultCount,
+        childrenCount,
+        price,
+        starRating,
+        imageUrls,
+        userId,
+      },
+    });
+
+    res.status(201).json(newHotel);
   } catch (error) {
     console.log("Error creating hotel: ", error);
     res.status(500).json({ message: "An internal server error occured!" });
