@@ -25,13 +25,13 @@ export async function createHotel(req: Request, res: Response) {
     if (imageFiles.length === 0) {
       return res
         .status(400)
-        .json({ message: "At least one image of the hotel is needed" });
+        .json({ message: "Please upload at least one image of your hotel" });
     }
 
     if (imageFiles.length > 5) {
       return res
         .status(400)
-        .json({ message: "You can upload a maximum of 5 images" });
+        .json({ message: "You may only upload a maximum of five (5) images" });
     }
 
     const uploadPromises = imageFiles.map(async (image) => {
