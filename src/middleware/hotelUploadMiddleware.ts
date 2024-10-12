@@ -42,10 +42,20 @@ export default function hotelUploadMiddleware(
     return res.status(400).json({ message: "Please fill all required fields" });
   }
 
+  if (typeof adultCount !== "number")
+    req.body.adultCount = parseInt(adultCount);
+  if (typeof childrenCount !== "number")
+    req.body.childrenCount = parseInt(childrenCount);
+  if (typeof price !== "number") req.body.price = parseInt(price);
+  if (typeof starRating !== "number")
+    req.body.starRating = parseInt(starRating);
+
+  console.log("The body for hotel upload is: ", req.body);
+
   if (
-    typeof adultCount !== "number" ||
-    typeof childrenCount !== "number" ||
-    typeof price !== "number"
+    typeof req.body.adultCount !== "number" ||
+    typeof req.body.childrenCount !== "number" ||
+    typeof req.body.price !== "number"
   ) {
     return res.status(400).json({ message: "Incorrect types" });
   }

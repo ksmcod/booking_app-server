@@ -22,6 +22,18 @@ export async function createHotel(req: Request, res: Response) {
 
     const imageFiles = req.files as Express.Multer.File[];
 
+    if (imageFiles.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "At least one image of the hotel is needed" });
+    }
+
+    if (imageFiles.length > 5) {
+      return res
+        .status(400)
+        .json({ message: "You can upload a maximum of 5 images" });
+    }
+
     const uploadPromises = imageFiles.map(async (image) => {
       const b64 = Buffer.from(image.buffer).toString("base64");
       let dataURI = "data:" + image.mimetype + ";base64," + b64;

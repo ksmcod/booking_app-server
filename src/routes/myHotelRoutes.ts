@@ -18,8 +18,8 @@ const upload = multer({
 myHotelRoutes.post(
   "/",
   authMiddleware,
-  hotelUploadMiddleware,
   upload.array("imageFiles", 5),
+  hotelUploadMiddleware,
   createHotel
 );
 
