@@ -50,10 +50,16 @@ export default function hotelUploadMiddleware(
   if (typeof starRating !== "number")
     req.body.starRating = parseInt(starRating);
 
+  console.log("The body for hotel upload is: ", req.body);
+  console.log("NAN is number: ", typeof NaN === "number");
+
   if (
     typeof req.body.adultCount !== "number" ||
+    Number.isNaN(req.body.adultCount) ||
     typeof req.body.childrenCount !== "number" ||
-    typeof req.body.price !== "number"
+    Number.isNaN(req.body.childrenCount) ||
+    typeof req.body.price !== "number" ||
+    Number.isNaN(req.body.price)
   ) {
     return res.status(400).json({ message: "Incorrect types" });
   }
