@@ -14,7 +14,7 @@ const upload = multer({
   },
 });
 
-// /api/my-hotels
+// /api/my-hotels - To creat hotel
 myHotelRoutes.post(
   "/",
   authMiddleware,
