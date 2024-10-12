@@ -51,7 +51,7 @@ export async function loginController(req: Request, res: Response) {
 
 // GET info of authenticated user
 export async function getAuthUser(req: Request, res: Response) {
-  const userId = req.userId;
+  const userId = req.userId as string;
 
   const user = await db.user.findUnique({
     where: {

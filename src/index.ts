@@ -18,6 +18,14 @@ import myHotelRoutes from "./routes/myHotelRoutes";
 const app = express();
 const PORT = 8080;
 
+declare global {
+  namespace Express {
+    interface Request {
+      userId?: string;
+    }
+  }
+}
+
 // Configure Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,

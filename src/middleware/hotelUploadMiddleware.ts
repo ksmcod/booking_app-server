@@ -14,21 +14,40 @@ export default function hotelUploadMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  const body: HotelBodyType = req.body;
+  const {
+    name,
+    city,
+    country,
+    description,
+    type,
+    adultCount,
+    childrenCount,
+    facilities,
+    price,
+    starRating,
+  }: HotelBodyType = req.body;
 
   if (
-    !body.name ||
-    !body.city ||
-    !body.country ||
-    !body.description ||
-    !body.type ||
-    !body.adultCount ||
-    !body.childrenCount ||
-    !body.facilities ||
-    !body.price ||
-    !body.starRating
+    !name ||
+    !city ||
+    !country ||
+    !description ||
+    !type ||
+    !adultCount ||
+    !childrenCount ||
+    !facilities ||
+    !price ||
+    !starRating
   ) {
-    return res.status(400).json({ message: "All fields are required" });
+    return res.status(400).json({ message: "Please fill all required fields" });
+  }
+
+  if (
+    typeof adultCount !== "number" ||
+    typeof childrenCount !== "number" ||
+    typeof price !== "number"
+  ) {
+    return res.status(400).json({ message: "Incorrect types" });
   }
 
   next();
