@@ -50,9 +50,6 @@ export default function hotelUploadMiddleware(
   if (typeof starRating !== "number")
     req.body.starRating = parseInt(starRating);
 
-  console.log("The body for hotel upload is: ", req.body);
-  console.log("NAN is number: ", typeof NaN === "number");
-
   if (
     typeof req.body.adultCount !== "number" ||
     Number.isNaN(req.body.adultCount) ||

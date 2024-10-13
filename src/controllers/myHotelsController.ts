@@ -39,7 +39,7 @@ export async function createHotel(req: Request, res: Response) {
       let dataURI = "data:" + image.mimetype + ";base64," + b64;
 
       const response = await cloudinary.v2.uploader.upload(dataURI, {
-        folder: "trippr",
+        folder: "trippr/hotels",
       });
       return response.url;
     });
