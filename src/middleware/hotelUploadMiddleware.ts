@@ -44,9 +44,14 @@ export default function hotelUploadMiddleware(
 
   if (typeof adultCount !== "number")
     req.body.adultCount = parseInt(adultCount);
+
   if (typeof childrenCount !== "number")
     req.body.childrenCount = parseInt(childrenCount);
-  if (typeof price !== "number") req.body.price = parseInt(price);
+
+  if (typeof price !== "number")
+    req.body.price = parseFloat(parseFloat(price).toFixed(2));
+  else req.body.price = price.toFixed(2);
+
   if (typeof starRating !== "number")
     req.body.starRating = parseInt(starRating);
 
