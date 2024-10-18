@@ -46,7 +46,7 @@ export async function createHotel(req: Request, res: Response) {
 
     const imageUrls = await Promise.all(uploadPromises);
 
-    const newHotel = await db.hotel.create({
+    await db.hotel.create({
       data: {
         name,
         city,
@@ -63,7 +63,7 @@ export async function createHotel(req: Request, res: Response) {
       },
     });
 
-    res.status(201).json(newHotel);
+    res.status(201).json({ message: "Hotel created successfully" });
   } catch (error) {
     console.log("Error creating hotel: ", error);
     res.status(500).json({ message: "An internal server error occured!" });

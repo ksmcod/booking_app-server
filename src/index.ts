@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import morgan from "morgan";
@@ -73,14 +73,13 @@ app.use("/api/users", userRoutes);
 // Configure my-hotel routes
 app.use("/api/my-hotels", myHotelRoutes);
 
-// app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-//   console.log("GLOBAL ERROR MAN!");
-
-//   if (err) {
-//     console.log("IF -> GLOBAL ERROR MAN");
-//   }
-//   res.status(500).json({ message: "A server error occured!" });
-// });
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  if (err) {
+    console.log("GLOBAL ERROR!");
+    console.log(err?.message || "No error message");
+  }
+  res.status(500).json({ message: "A server error occured!" });
+});
 
 app.listen(PORT, () => {
   db.$connect()
