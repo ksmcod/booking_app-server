@@ -63,7 +63,9 @@ export default function hotelUploadMiddleware(
     typeof req.body.price !== "number" ||
     Number.isNaN(req.body.price)
   ) {
-    return res.status(400).json({ message: "Incorrect types" });
+    return res
+      .status(400)
+      .json({ message: "Please fill all form fields correctly" });
   }
 
   next();
