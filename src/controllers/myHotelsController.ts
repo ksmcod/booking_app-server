@@ -69,3 +69,20 @@ export async function createHotel(req: Request, res: Response) {
     res.status(500).json({ message: "An internal server error occured!" });
   }
 }
+
+export async function getUserHotels(req: Request, res: Response) {
+  try {
+    const userId = req.userId as string;
+
+    const userHotels = await db.hotel.findMany({
+      where: {
+        userId: userId,
+      },
+    });
+
+    res.status(200).json(userHotels);
+  } catch (error) {
+    console.log("Error getting user hotels: ", error);
+    res.status(500).json({ message: "An internal server error occured" });
+  }
+}
