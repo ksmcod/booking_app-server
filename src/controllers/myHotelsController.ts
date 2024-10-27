@@ -78,6 +78,22 @@ export async function getUserHotels(req: Request, res: Response) {
       where: {
         userId: userId,
       },
+      select: {
+        id: true,
+        name: true,
+        city: true,
+        country: true,
+        description: true,
+        type: true,
+        adultCount: true,
+        childrenCount: true,
+        facilities: true,
+        price: true,
+        starRating: true,
+        imageUrls: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
 
     res.status(200).json(userHotels);
