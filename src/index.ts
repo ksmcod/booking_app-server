@@ -14,6 +14,7 @@ import userRoutes from "./routes/userRoutes";
 import { githubStrategy } from "./config/passport";
 import authRoutes from "./routes/authRoutes";
 import myHotelRoutes from "./routes/myHotelRoutes";
+import slugRoutes from "./routes/slugRoutes";
 
 const app = express();
 const PORT = 8080;
@@ -72,6 +73,9 @@ app.use("/api/users", userRoutes);
 
 // Configure my-hotel routes
 app.use("/api/my-hotels", myHotelRoutes);
+
+// Add slugs to hotels not having slugs
+app.use("/api/slugs", slugRoutes);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err) {
