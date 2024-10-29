@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import cloudinary from "cloudinary";
+import slugify from "slugify";
+import { nanoid } from "nanoid";
 
 import db from "../utils/db";
 import { HotelBodyType } from "../middleware/hotelUploadMiddleware";
@@ -46,6 +48,11 @@ export async function createHotel(req: Request, res: Response) {
 
     const imageUrls = await Promise.all(uploadPromises);
 
+    const slug = slugify(`${name}-${nanoid(5)}`, {
+      lower: true,
+      strict: true,
+    });
+
     await db.hotel.create({
       data: {
         name,
@@ -60,6 +67,7 @@ export async function createHotel(req: Request, res: Response) {
         starRating,
         imageUrls,
         userId,
+        slug,
       },
     });
 
