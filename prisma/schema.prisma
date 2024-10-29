@@ -45,6 +45,7 @@ model Hotel {
   price         Float
   starRating    Int
   imageUrls     String[]
+  slug          String?  @unique
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
