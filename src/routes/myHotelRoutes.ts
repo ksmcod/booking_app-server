@@ -1,6 +1,10 @@
 import { Router } from "express";
 import multer from "multer";
-import { createHotel, getUserHotels } from "../controllers/myHotelsController";
+import {
+  createHotel,
+  getOneUserHotel,
+  getUserHotels,
+} from "../controllers/myHotelsController";
 import hotelUploadMiddleware from "../middleware/hotelUploadMiddleware";
 import authMiddleware from "../middleware/authMiddleware";
 
@@ -26,5 +30,8 @@ myHotelRoutes.post(
 // /api/my-hotels - To get all hotels from a single user
 
 myHotelRoutes.get("/", authMiddleware, getUserHotels);
+
+// /api/:slug - To get a single hotel from the slug. Make sure the hotel belongs to current user!
+myHotelRoutes.get("/:slug", authMiddleware, getOneUserHotel);
 
 export default myHotelRoutes;

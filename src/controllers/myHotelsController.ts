@@ -6,6 +6,7 @@ import { nanoid } from "nanoid";
 import db from "../utils/db";
 import { HotelBodyType } from "../middleware/hotelUploadMiddleware";
 
+// Controller function to create a new hotel
 export async function createHotel(req: Request, res: Response) {
   try {
     const userId = req.userId as string;
@@ -78,6 +79,7 @@ export async function createHotel(req: Request, res: Response) {
   }
 }
 
+// Controller function to get all hotels owned by a single user!
 export async function getUserHotels(req: Request, res: Response) {
   try {
     const userId = req.userId as string;
@@ -108,5 +110,29 @@ export async function getUserHotels(req: Request, res: Response) {
   } catch (error) {
     console.log("Error getting user hotels: ", error);
     res.status(500).json({ message: "An internal server error occured" });
+  }
+}
+
+export async function getOneUserHotel(req: Request, res: Response) {
+  try {
+    console.log("Request params: ", req.params);
+    const slug = req.params.slug.toString();
+    const userId = req.userId;
+
+    const hotel = await db.hotel.findFirst({
+      where: {
+        slug,
+        userId,
+      },
+    });
+
+    if (!hotel) {
+      return res.status(404).json({ message: "Hotel not found" });
+    }
+
+    return res.status(200).json(hotel);
+  } catch (error) {
+    console.log("Error in fetching single hotel");
+    res.status(500).json({ message: "An error occured" });
   }
 }

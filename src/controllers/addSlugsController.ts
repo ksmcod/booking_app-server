@@ -3,7 +3,6 @@ import slugify from "slugify";
 import { nanoid } from "nanoid";
 
 import db from "../utils/db";
-import { Hotel } from "@prisma/client";
 
 export async function addSlugs(req: Request, res: Response) {
   const unSluggedHotels = await db.hotel.findMany({});
