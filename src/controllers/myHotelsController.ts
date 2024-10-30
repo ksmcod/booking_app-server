@@ -101,6 +101,7 @@ export async function getUserHotels(req: Request, res: Response) {
         price: true,
         starRating: true,
         imageUrls: true,
+        slug: true,
         createdAt: true,
         updatedAt: true,
       },
