@@ -160,16 +160,16 @@ export async function updateOneUserHotel(req: Request, res: Response) {
 
     const imageFiles = req.files as Express.Multer.File[];
 
-    if (imageFiles.length === 0 || imageUrls.length === 0) {
-      return res
-        .status(400)
-        .json({ message: "Please upload at least one image of your hotel" });
-    }
-
     if (imageFiles.length + imageUrls.length > 5) {
       return res
         .status(400)
         .json({ message: "You may only have a maximum of five (5) images" });
+    }
+
+    if (imageFiles.length + imageUrls.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "Please upload at least one image of your hotel" });
     }
 
     const uploadPromises = imageFiles.map(async (image) => {
