@@ -6,7 +6,7 @@ import { Hotel } from "@prisma/client";
 
 export type HotelBodyType = Omit<
   Hotel,
-  "id" | "imageUrls" | "createdAt" | "updatedAt" | "userId"
+  "id" | "createdAt" | "updatedAt" | "userId"
 >;
 
 export default function hotelUploadMiddleware(

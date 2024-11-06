@@ -114,11 +114,11 @@ export async function getUserHotels(req: Request, res: Response) {
   }
 }
 
+// Controller function to get a single hotel, owned by the user
 export async function getOneUserHotel(req: Request, res: Response) {
   try {
-    console.log("Request params: ", req.params);
     const slug = req.params.slug.toString();
-    const userId = req.userId;
+    const userId = req.userId as string;
 
     const hotel = await db.hotel.findFirst({
       where: {
@@ -136,4 +136,87 @@ export async function getOneUserHotel(req: Request, res: Response) {
     console.log("Error in fetching single hotel");
     res.status(500).json({ message: "An error occured" });
   }
+}
+
+// Controller function to update a single hotel
+export async function updateOneUserHotel(req: Request, res: Response) {
+  try {
+    const slug = req.params.slug.toString();
+    const userId = req.userId as string;
+
+    const {
+      name,
+      city,
+      country,
+      description,
+      type,
+      facilities,
+      adultCount,
+      childrenCount,
+      price,
+      starRating,
+      imageUrls,
+    }: HotelBodyType = req.body;
+
+    const imageFiles = req.files as Express.Multer.File[];
+
+    if (imageFiles.length === 0 || imageUrls.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "Please upload at least one image of your hotel" });
+    }
+
+    if (imageFiles.length + imageUrls.length > 5) {
+      return res
+        .status(400)
+        .json({ message: "You may only have a maximum of five (5) images" });
+    }
+
+    const uploadPromises = imageFiles.map(async (image) => {
+      const b64 = Buffer.from(image.buffer).toString("base64");
+      let dataURI = "data:" + image.mimetype + ";base64," + b64;
+
+      const response = await cloudinary.v2.uploader.upload(dataURI, {
+        folder: "trippr/hotels",
+      });
+      return response.url;
+    });
+
+    const newImageUrls = await Promise.all(uploadPromises);
+    const finalImageUrls = imageUrls.concat(newImageUrls);
+
+    const hotel = await db.hotel.findUnique({
+      where: {
+        slug: slug,
+        userId,
+      },
+    });
+
+    if (!hotel) {
+      return res.status(404).json({ message: "No hotel found" });
+    }
+
+    const updatedHotel = await db.hotel.update({
+      where: {
+        id: hotel.id,
+      },
+      data: {
+        name,
+        city,
+        country,
+        description,
+        type,
+        facilities,
+        adultCount,
+        childrenCount,
+        price,
+        starRating,
+        imageUrls: finalImageUrls,
+      },
+    });
+
+    console.log("Updated Hotel: ", updatedHotel);
+
+    res.status(200).json({ message: "Hotel updated successfully" });
+  } catch (error) {}
 }

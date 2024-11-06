@@ -4,6 +4,7 @@ import {
   createHotel,
   getOneUserHotel,
   getUserHotels,
+  updateOneUserHotel,
 } from "../controllers/myHotelsController";
 import hotelUploadMiddleware from "../middleware/hotelUploadMiddleware";
 import authMiddleware from "../middleware/authMiddleware";
@@ -31,7 +32,16 @@ myHotelRoutes.post(
 
 myHotelRoutes.get("/", authMiddleware, getUserHotels);
 
-// /api/:slug - To get a single hotel from the slug. Make sure the hotel belongs to current user!
+// /api/my-hotels/:slug - To get a single hotel from the slug. Make sure the hotel belongs to current user!
 myHotelRoutes.get("/:slug", authMiddleware, getOneUserHotel);
+
+// /api/my-hotels/:slug - To update a hotel with new information
+myHotelRoutes.put(
+  "/:slug",
+  authMiddleware,
+  upload.array("imageFiles", 5),
+  hotelUploadMiddleware,
+  updateOneUserHotel
+);
 
 export default myHotelRoutes;
