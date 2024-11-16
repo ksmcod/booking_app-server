@@ -51,24 +51,29 @@ export async function loginController(req: Request, res: Response) {
 
 // GET info of authenticated user
 export async function getAuthUser(req: Request, res: Response) {
-  const userId = req.userId as string;
+  try {
+    const userId = req.userId as string;
 
-  const user = await db.user.findUnique({
-    where: {
-      id: userId,
-    },
-    select: {
-      name: true,
-      email: true,
-      image: true,
-    },
-  });
+    const user = await db.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        name: true,
+        email: true,
+        image: true,
+      },
+    });
 
-  if (!user) {
-    return res.status(401).send({ message: "Unauthorized" });
+    if (!user) {
+      return res.status(401).send({ message: "Unauthorized" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.log("Error in getAuthUser: ", error);
+    res.status(500).json({ message: "An error occured" });
   }
-
-  res.status(200).json(user);
 }
 
 // Check token validity
