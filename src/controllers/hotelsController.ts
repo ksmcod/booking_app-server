@@ -4,7 +4,7 @@ import { HotelQueryParamsType, HotelSearchResponseType } from "../types";
 
 export async function searchController(req: Request, res: Response) {
   try {
-    const itemsPerPage = 10;
+    const itemsPerPage = 5;
     const pageNumber = parseInt(req.query.page?.toString() ?? "1");
 
     const skip = (pageNumber - 1) * itemsPerPage;
