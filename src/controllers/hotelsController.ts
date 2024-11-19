@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import qs from "qs";
+
 import db from "../utils/db";
 import {
   HotelQueryParamsType,
@@ -15,19 +17,9 @@ export async function searchController(req: Request, res: Response) {
 
     console.log("Query params: ", req.query);
 
-    // GET filter params from url
-    const selectedStarsString: string =
-      req.query.selectedStars?.toString() || "";
-    const selectedStars = selectedStarsString
-      .split(",")
-      .map(Number)
-      .filter((num) => !isNaN(num));
-
-    console.log("Selected stars num: ", selectedStars);
-
-    // GET query parameters from url
     const queryParameters: Partial<HotelQueryParamsType> = {};
 
+    // GET query parameters from url
     queryParameters.adultCount = parseInt(
       req.query.adultCount?.toString() || "1"
     );
@@ -44,6 +36,29 @@ export async function searchController(req: Request, res: Response) {
       queryParameters.city = req.query.city.toString();
     }
 
+    ////////////////////////////////////////////////////
+    // GET filter params from url
+    const selectedStarsString: string =
+      req.query.selectedStars?.toString() || "";
+    const selectedStars = selectedStarsString
+      .split(",")
+      .map(Number)
+      .filter((num) => !isNaN(num));
+
+    const selectedHotelTypesObj = qs.parse(
+      req.query.selectedHotelTypes?.toString() || {}
+    );
+    const selectedHotelTypes = Object.values(selectedHotelTypesObj).map(String);
+
+    if (selectedHotelTypes.length) {
+      queryParameters.type = {
+        in: selectedHotelTypes,
+      };
+    }
+
+    console.log("Selected hotel types string: ", selectedHotelTypes);
+
+    ////////////////////////////////////////////////////////
     // Total number of hotels that fit query criteria
     const totalMatches = await db.hotel.findMany({
       where: {

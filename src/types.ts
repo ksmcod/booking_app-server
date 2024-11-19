@@ -20,4 +20,7 @@ export interface HotelQueryParamsType {
   childrenCount: number;
   startDate: string;
   endDate: string;
+  type: {
+    in: string[];
+  };
 }
