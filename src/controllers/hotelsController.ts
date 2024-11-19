@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import db from "../utils/db";
-import { HotelQueryParamsType, HotelSearchResponseType } from "../types";
+import {
+  HotelQueryParamsType,
+  HotelSearchResponseType,
+  SearchFiltersType,
+} from "../types";
 
 export async function searchController(req: Request, res: Response) {
   try {
@@ -9,12 +13,25 @@ export async function searchController(req: Request, res: Response) {
 
     const skip = (pageNumber - 1) * itemsPerPage;
 
+    console.log("Query params: ", req.query);
+
+    // GET filter params from url
+    const selectedStarsString: string =
+      req.query.selectedStars?.toString() || "";
+    const selectedStars = selectedStarsString
+      .split(",")
+      .map(Number)
+      .filter((num) => !isNaN(num));
+
+    console.log("Selected stars num: ", selectedStars);
+
     // GET query parameters from url
     const queryParameters: Partial<HotelQueryParamsType> = {};
 
     queryParameters.adultCount = parseInt(
       req.query.adultCount?.toString() || "1"
     );
+
     queryParameters.childrenCount = parseInt(
       req.query.childrenCount?.toString() || "0"
     );
@@ -33,6 +50,9 @@ export async function searchController(req: Request, res: Response) {
         ...queryParameters,
         adultCount: { gte: queryParameters.adultCount },
         childrenCount: { gte: queryParameters.childrenCount },
+        starRating: {
+          in: selectedStars[0] !== 0 ? selectedStars : [1, 2, 3, 4, 5],
+        },
       },
     });
 
@@ -46,6 +66,9 @@ export async function searchController(req: Request, res: Response) {
         ...queryParameters,
         adultCount: { gte: queryParameters.adultCount },
         childrenCount: { gte: queryParameters.childrenCount },
+        starRating: {
+          in: selectedStars[0] !== 0 ? selectedStars : [1, 2, 3, 4, 5],
+        },
       },
     });
 

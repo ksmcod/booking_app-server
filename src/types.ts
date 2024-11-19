@@ -9,6 +9,9 @@ export interface HotelSearchResponseType {
     pages: number;
   };
 }
+export interface SearchFiltersType {
+  selectedStars: string[];
+}
 
 export interface HotelQueryParamsType {
   country: string;
