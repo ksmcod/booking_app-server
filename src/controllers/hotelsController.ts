@@ -58,6 +58,16 @@ export async function searchController(req: Request, res: Response) {
       };
     }
 
+    const selectedFacilitiesObj = qs.parse(
+      req.query.selectedFacilities?.toString() || ""
+    );
+    const selectedFacilities = Object.values(selectedFacilitiesObj).map(String);
+
+    if (selectedFacilities.length) {
+      queryParameters.facilities = {
+        hasEvery: selectedFacilities,
+      };
+    }
     ////////////////////////////////////////////////////////
     // Total number of hotels that fit query criteria
     const totalMatches = await db.hotel.findMany({

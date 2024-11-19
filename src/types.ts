@@ -22,4 +22,7 @@ export interface HotelQueryParamsType {
   starRating: {
     in: number[];
   };
+  facilities: {
+    hasEvery: string[];
+  };
 }
