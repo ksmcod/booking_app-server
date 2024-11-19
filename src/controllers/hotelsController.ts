@@ -2,11 +2,7 @@ import { Request, Response } from "express";
 import qs from "qs";
 
 import db from "../utils/db";
-import {
-  HotelQueryParamsType,
-  HotelSearchResponseType,
-  SearchFiltersType,
-} from "../types";
+import { HotelQueryParamsType, HotelSearchResponseType } from "../types";
 
 export async function searchController(req: Request, res: Response) {
   try {
@@ -38,12 +34,18 @@ export async function searchController(req: Request, res: Response) {
 
     ////////////////////////////////////////////////////
     // GET filter params from url
-    const selectedStarsString: string =
-      req.query.selectedStars?.toString() || "";
-    const selectedStars = selectedStarsString
-      .split(",")
+    const selectedStarsObj = qs.parse(
+      req.query.selectedStars?.toString() || {}
+    );
+    const selectedStars = Object.values(selectedStarsObj)
       .map(Number)
       .filter((num) => !isNaN(num));
+
+    if (selectedStars.length) {
+      queryParameters.starRating = {
+        in: selectedStars,
+      };
+    }
 
     const selectedHotelTypesObj = qs.parse(
       req.query.selectedHotelTypes?.toString() || {}
@@ -56,8 +58,6 @@ export async function searchController(req: Request, res: Response) {
       };
     }
 
-    console.log("Selected hotel types string: ", selectedHotelTypes);
-
     ////////////////////////////////////////////////////////
     // Total number of hotels that fit query criteria
     const totalMatches = await db.hotel.findMany({
@@ -65,9 +65,6 @@ export async function searchController(req: Request, res: Response) {
         ...queryParameters,
         adultCount: { gte: queryParameters.adultCount },
         childrenCount: { gte: queryParameters.childrenCount },
-        starRating: {
-          in: selectedStars[0] !== 0 ? selectedStars : [1, 2, 3, 4, 5],
-        },
       },
     });
 
@@ -81,9 +78,6 @@ export async function searchController(req: Request, res: Response) {
         ...queryParameters,
         adultCount: { gte: queryParameters.adultCount },
         childrenCount: { gte: queryParameters.childrenCount },
-        starRating: {
-          in: selectedStars[0] !== 0 ? selectedStars : [1, 2, 3, 4, 5],
-        },
       },
     });
 

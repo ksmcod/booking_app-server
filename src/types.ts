@@ -9,10 +9,6 @@ export interface HotelSearchResponseType {
     pages: number;
   };
 }
-export interface SearchFiltersType {
-  selectedStars: string[];
-}
-
 export interface HotelQueryParamsType {
   country: string;
   city: string;
@@ -22,5 +18,8 @@ export interface HotelQueryParamsType {
   endDate: string;
   type: {
     in: string[];
+  };
+  starRating: {
+    in: number[];
   };
 }
