@@ -2,7 +2,12 @@ import { Request, Response } from "express";
 import qs from "qs";
 
 import db from "../utils/db";
-import { HotelQueryParamsType, HotelSearchResponseType } from "../types";
+import {
+  HotelQueryParamsType,
+  HotelSearchResponseType,
+  HotelSortType,
+  SortByType,
+} from "../types";
 
 export async function searchController(req: Request, res: Response) {
   try {
@@ -15,6 +20,7 @@ export async function searchController(req: Request, res: Response) {
 
     const queryParameters: Partial<HotelQueryParamsType> = {};
 
+    //////////////////////////////////////////////////////
     // GET query parameters from url
     queryParameters.adultCount = parseInt(
       req.query.adultCount?.toString() || "1"
@@ -68,6 +74,25 @@ export async function searchController(req: Request, res: Response) {
         hasEvery: selectedFacilities,
       };
     }
+
+    ////////////////////////////////////////////////////////
+    // SORT Hotels
+    let sortFilters: Partial<HotelSortType> = {};
+
+    const sortBy = req.query.sortBy?.toString() || SortByType.None;
+
+    if (sortBy === SortByType.STARRATING) {
+      sortFilters = { orderBy: { starRating: "desc" } };
+    }
+
+    if (sortBy === SortByType.PRICELOWTOHIGH) {
+      sortFilters = { orderBy: { price: "asc" } };
+    }
+
+    if (sortBy === SortByType.PRICEHIGHTOLOW) {
+      sortFilters = { orderBy: { price: "desc" } };
+    }
+
     ////////////////////////////////////////////////////////
     // Total number of hotels that fit query criteria
     const totalMatches = await db.hotel.findMany({
@@ -89,6 +114,7 @@ export async function searchController(req: Request, res: Response) {
         adultCount: { gte: queryParameters.adultCount },
         childrenCount: { gte: queryParameters.childrenCount },
       },
+      ...sortFilters,
     });
 
     // Return response back to user

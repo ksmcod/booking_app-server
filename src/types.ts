@@ -9,6 +9,14 @@ export interface HotelSearchResponseType {
     pages: number;
   };
 }
+
+export enum SortByType {
+  None = "none",
+  STARRATING = "starRating",
+  PRICELOWTOHIGH = "priceLowToHigh",
+  PRICEHIGHTOLOW = "priceHighToLow",
+}
+
 export interface HotelQueryParamsType {
   country: string;
   city: string;
@@ -24,5 +32,12 @@ export interface HotelQueryParamsType {
   };
   facilities: {
     hasEvery: string[];
+  };
+}
+
+export interface HotelSortType {
+  orderBy: {
+    starRating?: "asc" | "desc";
+    price?: "asc" | "desc";
   };
 }
