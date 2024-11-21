@@ -12,16 +12,18 @@ import {
 export async function searchController(req: Request, res: Response) {
   try {
     const itemsPerPage = 5;
+
+    //What result page the user is on
     const pageNumber = parseInt(req.query.page?.toString() ?? "1");
 
     const skip = (pageNumber - 1) * itemsPerPage;
 
-    console.log("Query params: ", req.query);
-
-    const queryParameters: Partial<HotelQueryParamsType> = {};
-
     //////////////////////////////////////////////////////
     // GET query parameters from url
+
+    // This object will be spread into the prisma query function as an option object for querying. Hence it has thesame structure as the prisma options object, so it causes no errors
+    const queryParameters: Partial<HotelQueryParamsType> = {};
+
     queryParameters.adultCount = parseInt(
       req.query.adultCount?.toString() || "1"
     );
@@ -40,6 +42,10 @@ export async function searchController(req: Request, res: Response) {
 
     ////////////////////////////////////////////////////
     // GET filter params from url
+
+    // Objects will be spread into the prisma query function as option objects for filtering. Hence they has thesame structure as the prisma options object, so it causes no errors
+
+    // Filter hotels based on stars
     const selectedStarsObj = qs.parse(
       req.query.selectedStars?.toString() || {}
     );
@@ -53,6 +59,7 @@ export async function searchController(req: Request, res: Response) {
       };
     }
 
+    // Filter hotels based on hotel type
     const selectedHotelTypesObj = qs.parse(
       req.query.selectedHotelTypes?.toString() || {}
     );
@@ -64,6 +71,7 @@ export async function searchController(req: Request, res: Response) {
       };
     }
 
+    // Filter hotels according to facilities
     const selectedFacilitiesObj = qs.parse(
       req.query.selectedFacilities?.toString() || ""
     );
@@ -77,6 +85,9 @@ export async function searchController(req: Request, res: Response) {
 
     ////////////////////////////////////////////////////////
     // SORT Hotels
+
+    // This object will be spread into the prisma query function as an option object for sorting. Hence it has thesame structure as the prisma options object, so it causes no errors
+
     let sortFilters: Partial<HotelSortType> = {};
 
     const sortBy = req.query.sortBy?.toString() || SortByType.None;
@@ -95,15 +106,13 @@ export async function searchController(req: Request, res: Response) {
 
     ////////////////////////////////////////////////////////
     // Total number of hotels that fit query criteria
-    const totalMatches = await db.hotel.findMany({
+    const totalNumberOfMatches = await db.hotel.count({
       where: {
         ...queryParameters,
         adultCount: { gte: queryParameters.adultCount },
         childrenCount: { gte: queryParameters.childrenCount },
       },
     });
-
-    const totalNumberOfMatches = totalMatches.length;
 
     // Getting hotels to respond back to the user
     const hotels = await db.hotel.findMany({
