@@ -143,3 +143,24 @@ export async function searchController(req: Request, res: Response) {
     res.status(500).json({ message: "A server error occured" });
   }
 }
+
+export async function getSingleHotel(req: Request, res: Response) {
+  try {
+    const { slug } = req.params;
+
+    const hotel = await db.hotel.findUnique({
+      where: {
+        slug,
+      },
+    });
+
+    if (!hotel) {
+      return res.status(404).json({ message: "Hotel not found" });
+    }
+
+    return res.status(200).json(hotel);
+  } catch (error) {
+    console.log("Error in get single hotel");
+    res.status(500).json({ message: "An error occured" });
+  }
+}
