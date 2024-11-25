@@ -25,7 +25,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  hotels Hotel[]
+  hotels   Hotel[]
+  bookings Booking[]
 
   // OAuth Fields
   provider   String? // e.g., 'google', 'github', etc.
@@ -33,7 +34,7 @@ model User {
 }
 
 model Hotel {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String
   city          String
   country       String
@@ -45,11 +46,28 @@ model Hotel {
   price         Float
   starRating    Int
   imageUrls     String[]
-  slug          String?  @unique
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  slug          String?   @unique
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  bookings      Booking[]
 
   userId String @db.ObjectId
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Booking {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String   @db.ObjectId
+  hotelId       String   @db.ObjectId
+  checkinDate   DateTime
+  checkoutDate  DateTime
+  totalPrice    Float
+  adultCount    Int
+  childrenCount Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hotel Hotel @relation(fields: [hotelId], references: [id], onDelete: Cascade)
 }

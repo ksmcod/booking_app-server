@@ -14,7 +14,7 @@ hotelRoutes.get("/search", searchController);
 // /api/hotels/:slug - API endpoint to get hotel by slug
 hotelRoutes.get("/:slug", getSingleHotel);
 
-// - API endpoint to create STRIPE payment intent
+// - /api/hotels/stripe/payment-intent/:slug API endpoint to create STRIPE payment intent
 hotelRoutes.get(
   "/stripe/payment-intent/:slug",
   authMiddleware,
