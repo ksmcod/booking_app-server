@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import qs from "qs";
+import Stripe from "stripe";
 
 import db from "../utils/db";
 import {
@@ -161,6 +162,47 @@ export async function getSingleHotel(req: Request, res: Response) {
     return res.status(200).json(hotel);
   } catch (error) {
     console.log("Error in get single hotel");
+    res.status(500).json({ message: "An error occured" });
+  }
+}
+
+export async function createPaymentIntent(req: Request, res: Response) {
+  try {
+    const stripe = new Stripe(process.env.STRIPE_API_KEY as string);
+    const { numberOfNights }: { numberOfNights: number } = req.body;
+    const { slug } = req.params;
+
+    const hotel = await db.hotel.findUnique({ where: { slug } });
+
+    if (!hotel) {
+      return res.status(404).json({ message: "Hotel not found" });
+    }
+
+    const totalCost = numberOfNights * hotel.price;
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: totalCost,
+      currency: "usd",
+      metadata: {
+        slug,
+        userId: req.userId as string,
+      },
+    });
+
+    if (!paymentIntent.client_secret) {
+      console.log("Error! No client secret found in payment intent");
+      return res.status(500).json({ message: "An error occured" });
+    }
+
+    const response = {
+      paymentIntentId: paymentIntent.id,
+      clientSecret: paymentIntent.client_secret.toString(),
+      totalCost,
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    console.log("Error in ", req.url);
     res.status(500).json({ message: "An error occured" });
   }
 }
