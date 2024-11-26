@@ -241,21 +241,24 @@ export async function createHotelBooking(req: Request, res: Response) {
       totalPrice,
     }: BookHotelBodyType = req.body;
 
+    console.log("THE REQUEST BODY: ", req.body);
+
     if (
       !paymentIntentId ||
       !slug ||
       !checkinDate ||
       !checkoutDate ||
       !adultCount ||
-      !childrenCount ||
+      adultCount < 1 ||
+      (childrenCount && childrenCount < 0) ||
       !totalPrice
     ) {
       return res.status(400).json({ message: "Incomplete payload" });
     }
 
     if (
-      isNaN(new Date(checkinDate).getTime()) ||
-      isNaN(new Date(checkoutDate).getTime())
+      isNaN(new Date(parseInt(checkinDate)).getTime()) ||
+      isNaN(new Date(parseInt(checkoutDate)).getTime())
     ) {
       return res
         .status(400)
@@ -289,8 +292,8 @@ export async function createHotelBooking(req: Request, res: Response) {
 
     const newBooking = await db.booking.create({
       data: {
-        checkinDate: new Date(checkinDate),
-        checkoutDate: new Date(checkoutDate),
+        checkinDate: new Date(parseInt(checkinDate)),
+        checkoutDate: new Date(parseInt(checkoutDate)),
         totalPrice,
         adultCount,
         childrenCount,
