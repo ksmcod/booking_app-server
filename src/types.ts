@@ -41,3 +41,13 @@ export interface HotelSortType {
     price?: "asc" | "desc";
   };
 }
+
+export interface BookHotelBodyType {
+  paymentIntentId: string;
+  slug: string;
+  checkinDate: string;
+  checkoutDate: string;
+  totalPrice: number;
+  adultCount: number;
+  childrenCount: number;
+}

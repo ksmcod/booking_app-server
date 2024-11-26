@@ -1,22 +1,26 @@
 import { Router, Request, Response } from "express";
 import {
+  createHotelBooking,
   createPaymentIntent,
   getSingleHotel,
-  searchController,
+  searchAndFilterController,
 } from "../controllers/hotelsController";
 import authMiddleware from "../middleware/authMiddleware";
 
 const hotelRoutes = Router();
 
-// /api/hotels/search - API endpoint to search hotels
-hotelRoutes.get("/search", searchController);
+// GET  /api/hotels/search - API endpoint to search hotels
+hotelRoutes.get("/search", searchAndFilterController);
 
-// /api/hotels/:slug - API endpoint to get hotel by slug
+// GET /api/hotels/:slug - API endpoint to get hotel by slug
 hotelRoutes.get("/:slug", getSingleHotel);
 
-// - /api/hotels/stripe/payment-intent/:slug API endpoint to create STRIPE payment intent
-hotelRoutes.get(
-  "/stripe/payment-intent/:slug",
+// POST /api/hotels/book
+hotelRoutes.post("/book", authMiddleware, createHotelBooking);
+
+// - /api/hotels/payment/payment-intent/ API endpoint to create STRIPE payment intent
+hotelRoutes.post(
+  "/payment/payment-intent",
   authMiddleware,
   createPaymentIntent
 );

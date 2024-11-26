@@ -4,13 +4,16 @@ import Stripe from "stripe";
 
 import db from "../utils/db";
 import {
+  BookHotelBodyType,
   HotelQueryParamsType,
   HotelSearchResponseType,
   HotelSortType,
   SortByType,
 } from "../types";
+import { Booking } from "@prisma/client";
 
-export async function searchController(req: Request, res: Response) {
+// Controller function to search and filter searched hotels
+export async function searchAndFilterController(req: Request, res: Response) {
   try {
     const itemsPerPage = 5;
 
@@ -145,6 +148,7 @@ export async function searchController(req: Request, res: Response) {
   }
 }
 
+// Controller function to get data of a single hotel
 export async function getSingleHotel(req: Request, res: Response) {
   try {
     const { slug } = req.params;
@@ -166,11 +170,21 @@ export async function getSingleHotel(req: Request, res: Response) {
   }
 }
 
+// Controller function to create Stripe payment intent
 export async function createPaymentIntent(req: Request, res: Response) {
+  // To create payment intent, we need;
+  // 1. Total cost of the booking
+  // 2. Hotel slug of the hotel for which we are creating a booking
+  // 3. User id of the user creating the booking
+
   try {
     const stripe = new Stripe(process.env.STRIPE_API_KEY as string);
-    const { numberOfNights }: { numberOfNights: number } = req.body;
-    const { slug } = req.params;
+    const { numberOfNights, slug }: { numberOfNights: number; slug: string } =
+      req.body;
+
+    if (!numberOfNights || !slug) {
+      return res.status(400).json({ message: "Invalid request" });
+    }
 
     const hotel = await db.hotel.findUnique({ where: { slug } });
 
@@ -202,7 +216,88 @@ export async function createPaymentIntent(req: Request, res: Response) {
 
     res.status(200).json(response);
   } catch (error) {
-    console.log("Error in ", req.url);
+    console.log("Error in ", req.url, " : ", error);
+    res.status(500).json({ message: "An error occured" });
+  }
+}
+
+// Controller function to create a booking provided it has been paid for
+export async function createHotelBooking(req: Request, res: Response) {
+  try {
+    const stripe = new Stripe(process.env.STRIPE_API_KEY as string);
+    const userId = req.userId as string;
+
+    const {
+      paymentIntentId,
+      slug,
+      checkinDate,
+      checkoutDate,
+      adultCount,
+      childrenCount,
+      totalPrice,
+    }: BookHotelBodyType = req.body;
+
+    if (
+      !paymentIntentId ||
+      !slug ||
+      !checkinDate ||
+      !checkoutDate ||
+      !adultCount ||
+      !childrenCount ||
+      !totalPrice
+    ) {
+      return res.status(400).json({ message: "Incomplete payload" });
+    }
+
+    if (
+      isNaN(new Date(checkinDate).getTime()) ||
+      isNaN(new Date(checkoutDate).getTime())
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Invalid dates for checkin and/or checkout" });
+    }
+
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+
+    if (!paymentIntent) {
+      return res.status(400).json({ message: "Payment intent not found" });
+    }
+
+    if (
+      paymentIntent.metadata.slug !== slug ||
+      paymentIntent.metadata.userId !== req.userId
+    ) {
+      return res.status(400).json({ message: "Payment intent mismatch" });
+    }
+
+    if (paymentIntent.status !== "succeeded") {
+      return res.status(400).json({
+        message: `Payment not successful. Status: ${paymentIntent.status}`,
+      });
+    }
+
+    const hotel = await db.hotel.findUnique({ where: { slug } });
+
+    if (!hotel) {
+      return res.status(404).json({ message: "Hotel was not found" });
+    }
+
+    const newBooking = await db.booking.create({
+      data: {
+        checkinDate: new Date(checkinDate),
+        checkoutDate: new Date(checkoutDate),
+        totalPrice,
+        adultCount,
+        childrenCount,
+        userId: userId,
+        hotelId: hotel.id,
+      },
+    });
+
+    return res.status(201).json({ message: "Booking created successfully" });
+  } catch (error) {
+    console.log("Error in ", req.url, " : ", error);
     res.status(500).json({ message: "An error occured" });
   }
 }
