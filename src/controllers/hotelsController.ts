@@ -179,8 +179,8 @@ export async function createPaymentIntent(req: Request, res: Response) {
 
   try {
     const stripe = new Stripe(process.env.STRIPE_API_KEY as string);
-    const { numberOfNights, slug }: { numberOfNights: number; slug: string } =
-      req.body;
+    const { numberOfNights } = req.query;
+    const { slug } = req.params;
 
     if (!numberOfNights || !slug) {
       return res.status(400).json({ message: "Invalid request" });
@@ -192,7 +192,11 @@ export async function createPaymentIntent(req: Request, res: Response) {
       return res.status(404).json({ message: "Hotel not found" });
     }
 
-    const totalCost = numberOfNights * hotel.price;
+    const bookingDuration = !isNaN(parseInt(numberOfNights.toString()))
+      ? parseInt(numberOfNights.toString())
+      : 0;
+
+    const totalCost = bookingDuration * hotel.price;
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount: totalCost,

@@ -19,8 +19,8 @@ hotelRoutes.get("/:slug", getSingleHotel);
 hotelRoutes.post("/book", authMiddleware, createHotelBooking);
 
 // - /api/hotels/payment/payment-intent/ API endpoint to create STRIPE payment intent
-hotelRoutes.post(
-  "/payment/payment-intent",
+hotelRoutes.get(
+  "/payment/payment-intent/:slug",
   authMiddleware,
   createPaymentIntent
 );
