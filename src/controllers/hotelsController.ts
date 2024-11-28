@@ -199,7 +199,7 @@ export async function createPaymentIntent(req: Request, res: Response) {
     const totalCost = bookingDuration * hotel.price;
 
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: totalCost,
+      amount: totalCost * 100,
       currency: "usd",
       metadata: {
         slug,
