@@ -59,7 +59,7 @@ model Hotel {
 model Booking {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   userId        String   @db.ObjectId
-  hotelSlug     String   @db.ObjectId
+  hotelSlug     String
   checkinDate   DateTime
   checkoutDate  DateTime
   totalPrice    Float
@@ -69,5 +69,5 @@ model Booking {
   updatedAt     DateTime @updatedAt
 
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  hotel Hotel @relation(fields: [hotelSlug], references: [id], onDelete: Cascade)
+  hotel Hotel @relation(fields: [hotelSlug], references: [slug], onDelete: Cascade)
 }
