@@ -308,3 +308,20 @@ export async function createHotelBooking(req: Request, res: Response) {
     res.status(500).json({ message: "An error occured" });
   }
 }
+
+export async function getAllBookings(req: Request, res: Response) {
+  try {
+    const userId = req.userId as string;
+
+    const bookings = await db.booking.findMany({
+      where: {
+        userId,
+      },
+    });
+
+    return res.status(200).json(bookings);
+  } catch (error) {
+    console.log("Error in ", req.url, " : ", error);
+    return res.status(500).json({ message: "An error occured" });
+  }
+}

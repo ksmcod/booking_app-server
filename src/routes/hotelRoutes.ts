@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import {
   createHotelBooking,
   createPaymentIntent,
+  getAllBookings,
   getSingleHotel,
   searchAndFilterController,
 } from "../controllers/hotelsController";
@@ -24,5 +25,8 @@ hotelRoutes.get(
   authMiddleware,
   createPaymentIntent
 );
+
+// GET /api/hotels/bookings - API endpoint to get all bookings of a single user
+hotelRoutes.get("/bookings", authMiddleware, getAllBookings);
 
 export default hotelRoutes;
