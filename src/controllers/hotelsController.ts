@@ -298,7 +298,7 @@ export async function createHotelBooking(req: Request, res: Response) {
         adultCount,
         childrenCount,
         userId: userId,
-        hotelId: hotel.id,
+        hotelSlug: hotel.slug,
       },
     });
 
