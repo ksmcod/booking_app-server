@@ -10,7 +10,6 @@ import {
   HotelSortType,
   SortByType,
 } from "../types";
-import { Booking } from "@prisma/client";
 
 // Controller function to search and filter searched hotels
 export async function searchAndFilterController(req: Request, res: Response) {
@@ -309,6 +308,7 @@ export async function createHotelBooking(req: Request, res: Response) {
   }
 }
 
+// Controller function to get all bookings for a single user
 export async function getAllBookings(req: Request, res: Response) {
   try {
     const userId = req.userId as string;
@@ -322,6 +322,49 @@ export async function getAllBookings(req: Request, res: Response) {
     return res.status(200).json(bookings);
   } catch (error) {
     console.log("Error in ", req.url, " : ", error);
+    return res.status(500).json({ message: "An error occured" });
+  }
+}
+
+export async function getHotels(req: Request, res: Response) {
+  enum GETBY {
+    hotestLocations = "hotest",
+    recentlyAdded = "recent",
+  }
+
+  try {
+    const orderBy = req.query.orderBy?.toString();
+
+    if (!orderBy) {
+      const hotels = await db.hotel.findMany({ take: 6 });
+
+      return res.status(200).json(hotels);
+    }
+
+    if (orderBy === GETBY.hotestLocations) {
+      const hotels = await db.hotel.findMany({
+        include: {
+          _count: { select: { bookings: true } },
+        },
+        orderBy: {
+          bookings: { _count: "desc" },
+        },
+        take: 3,
+      });
+
+      return res.status(200).json(hotels);
+    }
+
+    if (orderBy === GETBY.recentlyAdded) {
+      const hotels = await db.hotel.findMany({
+        orderBy: { createdAt: "desc" },
+        take: 3,
+      });
+
+      return res.status(200).json(hotels);
+    }
+  } catch (error) {
+    console.log("Error in: ", req.url, " : ", error);
     return res.status(500).json({ message: "An error occured" });
   }
 }

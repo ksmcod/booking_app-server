@@ -3,6 +3,7 @@ import {
   createHotelBooking,
   createPaymentIntent,
   getAllBookings,
+  getHotels,
   getSingleHotel,
   searchAndFilterController,
 } from "../controllers/hotelsController";
@@ -12,6 +13,9 @@ const hotelRoutes = Router();
 
 // GET  /api/hotels/search - API endpoint to search hotels
 hotelRoutes.get("/search", searchAndFilterController);
+
+// GET /api/hotels - API endpoint to get hotels (Used to display hotels on landing page)
+hotelRoutes.get("/", getHotels);
 
 // POST /api/hotels/book
 hotelRoutes.post("/book", authMiddleware, createHotelBooking);
