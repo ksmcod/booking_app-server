@@ -358,7 +358,7 @@ export async function getHotels(req: Request, res: Response) {
     if (orderBy === GETBY.recentlyAdded) {
       const hotels = await db.hotel.findMany({
         orderBy: { createdAt: "desc" },
-        take: 3,
+        take: 2,
       });
 
       return res.status(200).json(hotels);
