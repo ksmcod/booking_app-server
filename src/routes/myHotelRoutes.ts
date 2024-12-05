@@ -45,7 +45,7 @@ myHotelRoutes.put(
   updateOneUserHotel
 );
 
-// DELETE /api/my0hotels/:slug - API endpoint to delete hotel
+// DELETE /api/my-hotels/:slug - API endpoint to delete hotel
 myHotelRoutes.delete("/:slug", authMiddleware, deleteHotel);
 
 export default myHotelRoutes;
