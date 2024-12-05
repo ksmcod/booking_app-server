@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Backend code for hotel booking platform",
   "scripts": {
-    "build": "npm install && tsc",
+    "build": "tsc",
     "start": "node ./dist/index.js",
     "dev": "nodemon ./src/index.ts"
   },
