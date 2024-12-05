@@ -2,7 +2,6 @@ import { Router } from "express";
 import {
   createHotelBooking,
   createPaymentIntent,
-  deleteHotel,
   getAllBookings,
   getHotels,
   getSingleHotel,
@@ -33,8 +32,5 @@ hotelRoutes.get("/:slug", getSingleHotel);
 
 // POST /api/hotels/book
 hotelRoutes.post("/book", authMiddleware, createHotelBooking);
-
-// DELETE /api/hotels/:slug - API endpoint to delete hotel
-hotelRoutes.delete("/:slug", authMiddleware, deleteHotel);
 
 export default hotelRoutes;

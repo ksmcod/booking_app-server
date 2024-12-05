@@ -2,6 +2,7 @@ import { Router } from "express";
 import multer from "multer";
 import {
   createHotel,
+  deleteHotel,
   getOneUserHotel,
   getUserHotels,
   updateOneUserHotel,
@@ -43,5 +44,8 @@ myHotelRoutes.put(
   hotelUploadMiddleware,
   updateOneUserHotel
 );
+
+// DELETE /api/my0hotels/:slug - API endpoint to delete hotel
+myHotelRoutes.delete("/:slug", authMiddleware, deleteHotel);
 
 export default myHotelRoutes;

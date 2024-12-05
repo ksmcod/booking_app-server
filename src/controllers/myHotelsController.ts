@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
-import cloudinary from "cloudinary";
+import { v2 as cloudinary } from "cloudinary";
 import slugify from "slugify";
 import { nanoid } from "nanoid";
 
 import db from "../utils/db";
 import { HotelBodyType } from "../middleware/hotelUploadMiddleware";
+import getPublicIdFromUrl from "../utils/getPublicIdFromUrl";
 
 // Controller function to create a new hotel
 export async function createHotel(req: Request, res: Response) {
@@ -41,7 +42,7 @@ export async function createHotel(req: Request, res: Response) {
       const b64 = Buffer.from(image.buffer).toString("base64");
       let dataURI = "data:" + image.mimetype + ";base64," + b64;
 
-      const response = await cloudinary.v2.uploader.upload(dataURI, {
+      const response = await cloudinary.uploader.upload(dataURI, {
         folder: "trippr/hotels",
       });
       return response.url;
@@ -176,7 +177,7 @@ export async function updateOneUserHotel(req: Request, res: Response) {
       const b64 = Buffer.from(image.buffer).toString("base64");
       let dataURI = "data:" + image.mimetype + ";base64," + b64;
 
-      const response = await cloudinary.v2.uploader.upload(dataURI, {
+      const response = await cloudinary.uploader.upload(dataURI, {
         folder: "trippr/hotels",
       });
       return response.url;
@@ -219,4 +220,42 @@ export async function updateOneUserHotel(req: Request, res: Response) {
 
     res.status(200).json({ message: "Hotel updated successfully" });
   } catch (error) {}
+}
+
+// Controller function to delete hotel
+export async function deleteHotel(req: Request, res: Response) {
+  try {
+    const slug = req.params.slug.toString();
+    const userId = req.userId as string;
+
+    const hotel = await db.hotel.findUnique({
+      where: {
+        userId,
+        slug,
+      },
+    });
+
+    if (!hotel) {
+      return res.status(404).json({ message: "The hotel does not exist" });
+    }
+
+    // Extract public IDs from array of image urls
+    const imageUrls = hotel.imageUrls;
+    const publicIds = imageUrls.map(getPublicIdFromUrl);
+
+    // Delete images from cloudinary
+
+    const deletePromises = publicIds.map((publicId) =>
+      cloudinary.uploader.destroy(publicId)
+    );
+    await Promise.all(deletePromises);
+
+    // Delete hotel from database
+    await db.hotel.delete({ where: { slug } });
+
+    return res.status(200).json({ message: "Hotel deleted" });
+  } catch (error) {
+    console.log("Error at ", req.url, " : ", error);
+    return res.status(500).json({ message: "An error occured" });
+  }
 }
