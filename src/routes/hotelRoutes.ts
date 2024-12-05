@@ -1,7 +1,8 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
 import {
   createHotelBooking,
   createPaymentIntent,
+  deleteHotel,
   getAllBookings,
   getHotels,
   getSingleHotel,
@@ -17,9 +18,6 @@ hotelRoutes.get("/search", searchAndFilterController);
 // GET /api/hotels - API endpoint to get hotels (Used to display hotels on landing page)
 hotelRoutes.get("/", getHotels);
 
-// POST /api/hotels/book
-hotelRoutes.post("/book", authMiddleware, createHotelBooking);
-
 // GET /api/hotels/bookings - API endpoint to get all bookings of a single user
 hotelRoutes.get("/bookings", authMiddleware, getAllBookings);
 
@@ -32,5 +30,11 @@ hotelRoutes.get(
 
 // GET /api/hotels/:slug - API endpoint to get hotel by slug
 hotelRoutes.get("/:slug", getSingleHotel);
+
+// POST /api/hotels/book
+hotelRoutes.post("/book", authMiddleware, createHotelBooking);
+
+// DELETE /api/hotels/:slug - API endpoint to delete hotel
+hotelRoutes.delete("/:slug", authMiddleware, deleteHotel);
 
 export default hotelRoutes;

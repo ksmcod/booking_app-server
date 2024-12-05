@@ -1,8 +1,11 @@
 import { Request, Response } from "express";
+import { v2 as cloudinary } from "cloudinary";
 import qs from "qs";
 import Stripe from "stripe";
 
 import db from "../utils/db";
+import getPublicIdFromUrl from "../utils/getPublicIdFromUrl";
+
 import {
   BookHotelBodyType,
   HotelQueryParamsType,
@@ -365,6 +368,44 @@ export async function getHotels(req: Request, res: Response) {
     }
   } catch (error) {
     console.log("Error in: ", req.url, " : ", error);
+    return res.status(500).json({ message: "An error occured" });
+  }
+}
+
+// Controller function to delete hotel
+export async function deleteHotel(req: Request, res: Response) {
+  try {
+    const slug = req.params.slug.toString();
+    const userId = req.userId as string;
+
+    const hotel = await db.hotel.findUnique({
+      where: {
+        userId,
+        slug,
+      },
+    });
+
+    if (!hotel) {
+      return res.status(404).json({ message: "The hotel does not exist" });
+    }
+
+    // Extract public IDs from array of image urls
+    const imageUrls = hotel.imageUrls;
+    const publicIds = imageUrls.map(getPublicIdFromUrl);
+
+    // Delete images from cloudinary
+
+    const deletePromises = publicIds.map((publicId) =>
+      cloudinary.uploader.destroy(publicId)
+    );
+    await Promise.all(deletePromises);
+
+    // Delete hotel from database
+    await db.hotel.delete({ where: { slug } });
+
+    return res.status(200).json({ message: "Hotel deleted" });
+  } catch (error) {
+    console.log("Error at ", req.url, " : ", error);
     return res.status(500).json({ message: "An error occured" });
   }
 }
