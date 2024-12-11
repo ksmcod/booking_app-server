@@ -46,7 +46,9 @@ app.use(cookieParser());
 app.use(cors({ credentials: true, origin: process.env.CLIENT_URL }));
 
 // Configure morgan middleware for logging
-app.use(morgan("dev"));
+if (process.env.NODE_ENV !== "production") {
+  app.use(morgan("dev"));
+}
 
 // Configure Passport middleware
 app.use(passport.initialize());
