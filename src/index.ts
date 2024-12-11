@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
-import cors from "cors";
+import cors, { CorsOptions } from "cors";
 import morgan from "morgan";
 import "dotenv/config";
 import passport from "passport";
@@ -43,7 +43,29 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Configure CORS middleware
-app.use(cors({ credentials: true, origin: "*" }));
+const corsOptions: CorsOptions = {
+  origin(requestOrigin, callback) {
+    // Allow only requests from specific origins
+    const allowedOrigins = [process.env.CLIENT_URL];
+
+    if (!requestOrigin || allowedOrigins.includes(requestOrigin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Denied by CORS!"));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "Accept",
+    "Origin",
+    "X-Requested-With",
+  ],
+};
+
+app.use(cors(corsOptions));
 
 // Configure morgan middleware for logging
 if (process.env.NODE_ENV !== "production") {
@@ -95,10 +117,10 @@ app.use("*", (req: Request, res: Response) => {
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err) {
-    console.log("GLOBAL ERROR!");
     console.log(err?.message || "No error message");
   }
-  res.status(500).json({ message: "A server error occured!" });
+
+  res.status(500).json({ message: err.message ?? "A server error occured!" });
 });
 
 app.listen(PORT, () => {
