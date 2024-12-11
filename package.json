@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Backend code for hotel booking platform",
   "scripts": {
-    "build": "npm install && npx tsc",
+    "build": "tsc",
     "start": "node ./dist/index.js",
     "dev": "nodemon ./src/index.ts"
   },
@@ -27,9 +27,7 @@
     "passport-github2": "^0.1.12",
     "qs": "^6.13.1",
     "slugify": "^1.6.6",
-    "stripe": "^17.4.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.7.2"
+    "stripe": "^17.4.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
@@ -44,6 +42,8 @@
     "@types/passport": "^1.0.16",
     "@types/passport-github2": "^1.2.9",
     "nodemon": "^3.1.4",
-    "prisma": "^5.19.1"
+    "prisma": "^5.19.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
   }
 }
