@@ -88,6 +88,11 @@ app.use("/api/hotels", hotelRoutes);
 // Add slugs to hotels not having slugs
 app.use("/api/slugs", slugRoutes);
 
+// Catch all route
+app.use("*", (req: Request, res: Response) => {
+  return res.status(404).json({ message: "Resource not found" });
+});
+
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err) {
     console.log("GLOBAL ERROR!");
