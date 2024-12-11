@@ -127,7 +127,7 @@ app.use("*", (req: Request, res: Response) => {
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err && (err.message as string).includes("CORS")) {
-    return res.status(403).json({ message: err.messag });
+    return res.status(403).json({ message: err.message });
   }
 
   res.status(500).json({ message: err.message ?? "A server error occured!" });
