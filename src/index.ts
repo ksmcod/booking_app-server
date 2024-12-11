@@ -46,7 +46,7 @@ app.use(cookieParser());
 const corsOptions: CorsOptions = {
   origin(requestOrigin, callback) {
     // Allow only requests from specific origins
-    const allowedOrigins = [process.env.CLIENT_URL];
+    const allowedOrigins = [process.env.CLIENT_URL as string];
 
     if (process.env.NODE_ENV == "development") {
       callback(null, true);
@@ -77,10 +77,10 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 // Display origin
-// app.use("*", (req: Request, res: Response, next: NextFunction) => {
-//   console.log("Request origin: ", req.headers.origin);
-//   next();
-// });
+app.use("*", (req: Request, res: Response, next: NextFunction) => {
+  console.log("Request origin: ", req.headers.origin);
+  next();
+});
 
 // Configure Passport middleware
 app.use(passport.initialize());
