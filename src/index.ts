@@ -48,10 +48,14 @@ const corsOptions: CorsOptions = {
     // Allow only requests from specific origins
     const allowedOrigins = [process.env.CLIENT_URL];
 
-    if (!requestOrigin || allowedOrigins.includes(requestOrigin)) {
+    if (process.env.NODE_ENV == "development") {
       callback(null, true);
     } else {
-      callback(new Error("Denied by CORS!"));
+      if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Denied by CORS!"));
+      }
     }
   },
   credentials: true,
@@ -71,6 +75,12 @@ app.use(cors(corsOptions));
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
+
+// Display origin
+// app.use("*", (req: Request, res: Response, next: NextFunction) => {
+//   console.log("Request origin: ", req.headers.origin);
+//   next();
+// });
 
 // Configure Passport middleware
 app.use(passport.initialize());
@@ -116,8 +126,8 @@ app.use("*", (req: Request, res: Response) => {
 });
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  if (err) {
-    console.log(err?.message || "No error message");
+  if (err && (err.message as string).includes("CORS")) {
+    return res.status(403).json({ message: err.messag });
   }
 
   res.status(500).json({ message: err.message ?? "A server error occured!" });
