@@ -68,6 +68,11 @@ app.get("/api/test", (req: Request, res: Response) => {
   res.json({ message: "Hello from express endpoint!" });
 });
 
+app.get("/api/echo/:message", (req: Request, res: Response) => {
+  const { message } = req.params;
+  return res.status(200).json({ message });
+});
+
 // Configure authentication routes
 app.use("/api/auth", authRoutes);
 
