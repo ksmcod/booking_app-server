@@ -55,7 +55,7 @@ const corsOptions: CorsOptions = {
     if (process.env.NODE_ENV == "development") {
       callback(null, true);
     } else {
-      if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
+      if (!requestOrigin || allowedOrigins.includes(requestOrigin)) {
         callback(null, true);
       } else {
         callback(new Error("Denied by CORS!"));
