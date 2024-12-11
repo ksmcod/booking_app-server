@@ -43,7 +43,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Configure CORS middleware
-app.use(cors({ credentials: true, origin: process.env.CLIENT_URL }));
+app.use(cors({ credentials: true, origin: "*" }));
 
 // Configure morgan middleware for logging
 if (process.env.NODE_ENV !== "production") {
