@@ -46,7 +46,11 @@ app.use(cookieParser());
 const corsOptions: CorsOptions = {
   origin(requestOrigin, callback) {
     // Allow only requests from specific origins
-    const allowedOrigins = [process.env.CLIENT_URL as string];
+    const allowedOrigins = [
+      process.env.CLIENT_URL as string,
+      process.env.SERVER_URL as string,
+      "https://github.com",
+    ];
 
     if (process.env.NODE_ENV == "development") {
       callback(null, true);
