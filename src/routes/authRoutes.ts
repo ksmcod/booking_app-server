@@ -40,9 +40,13 @@ authRoutes.get(
     session: false,
   }),
   (req: any, res: Response, next: NextFunction) => {
+    console.log("GITHUB AUTH: Running callback fn");
     if (req.user) {
       // At this point, auth was successful, and a token has been generated
+      console.log("GITHUB AUTH: User exists | created...");
       const token = req.user.token;
+
+      console.log("GITHUB AUTH: Token: ", token);
       setToken(token, res);
 
       res.redirect(process.env.CLIENT_URL as string);
@@ -59,6 +63,8 @@ authRoutes.use((err: any, req: Request, res: Response, next: NextFunction) => {
     // return res
     //   .status(500)
     //   .json({ message: err.message ?? "Uh oh, seems like something happened" });
+
+    console.log("GITHUB AUTH: Error: ", err);
 
     if (process.env.CLIENT_URL) {
       res.redirect(
