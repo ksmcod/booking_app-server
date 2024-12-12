@@ -53,6 +53,7 @@ authRoutes.get(
         httpOnly: true,
         secure: process.env.NODE_ENV == "production",
         maxAge: 172800000,
+        sameSite: "lax",
       });
 
       res.redirect(process.env.CLIENT_URL as string);
