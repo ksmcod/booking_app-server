@@ -44,10 +44,16 @@ authRoutes.get(
     if (req.user) {
       // At this point, auth was successful, and a token has been generated
       console.log("GITHUB AUTH: User exists | created...");
-      const token = req.user.token;
+      const token = req.user.token as string;
 
       console.log("GITHUB AUTH: Token: ", token);
-      setToken(token, res);
+      // setToken(token, res);
+
+      res.cookie("user_token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV == "production",
+        maxAge: 172800000,
+      });
 
       res.redirect(process.env.CLIENT_URL as string);
     } else {
