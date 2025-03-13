@@ -56,12 +56,6 @@ const corsOptions: CorsOptions = {
     if (process.env.NODE_ENV == "development") {
       return callback(null, true);
     } else {
-      console.log("REQUEST_ORIGIN: ", requestOrigin);
-      console.log(
-        "REQUEST_ORIGIN ALLOWED",
-        allowedOrigins.includes(requestOrigin || "")
-      );
-
       if (!requestOrigin || allowedOrigins.includes(requestOrigin)) {
         return callback(null, true);
       } else {
@@ -83,9 +77,9 @@ const corsOptions: CorsOptions = {
 app.use(cors(corsOptions));
 
 // Configure morgan middleware for logging
-// if (process.env.NODE_ENV !== "production") {
-// }
-app.use(morgan("dev"));
+if (process.env.NODE_ENV !== "production") {
+  app.use(morgan("dev"));
+}
 
 // Display origin
 // app.use("*", (req: Request, res: Response, next: NextFunction) => {
@@ -109,14 +103,14 @@ app.use(express.static(clientPath));
 //   res.redirect((process.env.CLIENT_URL as string) || "/");
 // });
 
-// app.get("/api/test", (req: Request, res: Response) => {
-//   res.json({ message: "Hello from express endpoint!" });
-// });
+app.get("/api/test", (req: Request, res: Response) => {
+  res.json({ message: "Hello from express endpoint!" });
+});
 
-// app.get("/api/echo/:message", (req: Request, res: Response) => {
-//   const { message } = req.params;
-//   return res.status(200).json({ message });
-// });
+app.get("/api/echo/:message", (req: Request, res: Response) => {
+  const { message } = req.params;
+  return res.status(200).json({ message });
+});
 
 // Configure authentication routes
 app.use("/api/auth", authRoutes);
