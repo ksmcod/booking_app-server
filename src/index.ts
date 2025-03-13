@@ -81,11 +81,11 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 // Display origin
-app.use("*", (req: Request, res: Response, next: NextFunction) => {
-  console.log("Request origin: ", req.headers.origin);
-  console.log("Request cookies: ", req.cookies);
-  next();
-});
+// app.use("*", (req: Request, res: Response, next: NextFunction) => {
+//   console.log("Request origin: ", req.headers.origin);
+//   console.log("Request cookies: ", req.cookies);
+//   next();
+// });
 
 // Configure Passport middleware
 app.use(passport.initialize());

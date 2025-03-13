@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import db from "../utils/db";
 import setToken from "../utils/setToken";
 import createToken from "../utils/createToken";
+import { request } from "http";
 
 interface RegisterRequestBody {
   email: string;
@@ -57,4 +58,26 @@ export async function registerController(req: Request, res: Response) {
     console.log(error);
     res.status(500).json({ message: "Something went wrong!" });
   }
+}
+
+// GET CURRENT USER INFO CONTROLLER FUNCTION
+export async function getUserInfo(req: Request, res: Response) {
+  const userId = req.userId as string;
+
+  const user = await db.user.findFirst({
+    where: {
+      id: userId,
+    },
+    select: {
+      name: true,
+      email: true,
+      image: true,
+    },
+  });
+
+  if (!user) {
+    return res.status(404).json({ message: "Unauthorized" });
+  }
+
+  return res.json(user);
 }
