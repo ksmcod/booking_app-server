@@ -94,7 +94,7 @@ app.use(passport.initialize());
 githubStrategy(passport);
 
 // Configure static assets
-const clientPath = path.join(__dirname, "client-dist");
+const clientPath = path.join(__dirname, "frontend");
 app.use(express.static(clientPath));
 
 // Routing begins
