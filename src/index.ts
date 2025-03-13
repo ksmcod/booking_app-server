@@ -49,16 +49,17 @@ const corsOptions: CorsOptions = {
     const allowedOrigins = [
       process.env.CLIENT_URL as string,
       process.env.SERVER_URL as string,
+      "/",
       "https://github.com",
     ];
 
     if (process.env.NODE_ENV == "development") {
-      callback(null, true);
+      return callback(null, true);
     } else {
       if (!requestOrigin || allowedOrigins.includes(requestOrigin)) {
-        callback(null, true);
+        return callback(null, true);
       } else {
-        callback(new Error("Denied by CORS!"));
+        return callback(new Error("Denied by CORS!"));
       }
     }
   },
