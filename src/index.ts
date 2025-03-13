@@ -56,6 +56,8 @@ const corsOptions: CorsOptions = {
     if (process.env.NODE_ENV == "development") {
       return callback(null, true);
     } else {
+      console.log("REQUEST_ORIGIN: ", requestOrigin);
+
       if (!requestOrigin || allowedOrigins.includes(requestOrigin)) {
         return callback(null, true);
       } else {
@@ -77,9 +79,9 @@ const corsOptions: CorsOptions = {
 app.use(cors(corsOptions));
 
 // Configure morgan middleware for logging
-if (process.env.NODE_ENV !== "production") {
-  app.use(morgan("dev"));
-}
+// if (process.env.NODE_ENV !== "production") {
+// }
+app.use(morgan("dev"));
 
 // Display origin
 // app.use("*", (req: Request, res: Response, next: NextFunction) => {
