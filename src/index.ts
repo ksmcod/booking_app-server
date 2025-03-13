@@ -43,20 +43,24 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Configure CORS middleware
+const allowedOrigins = [
+  process.env.CLIENT_URL as string,
+  process.env.SERVER_URL as string,
+  "https://github.com",
+];
+
 const corsOptions: CorsOptions = {
   origin(requestOrigin, callback) {
     // Allow only requests from specific origins
-    const allowedOrigins = [
-      process.env.CLIENT_URL as string,
-      process.env.SERVER_URL as string,
-      "/",
-      "https://github.com",
-    ];
 
     if (process.env.NODE_ENV == "development") {
       return callback(null, true);
     } else {
       console.log("REQUEST_ORIGIN: ", requestOrigin);
+      console.log(
+        "REQUEST_ORIGIN ALLOWED",
+        allowedOrigins.includes(requestOrigin || "")
+      );
 
       if (!requestOrigin || allowedOrigins.includes(requestOrigin)) {
         return callback(null, true);
