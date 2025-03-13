@@ -94,21 +94,22 @@ app.use(passport.initialize());
 githubStrategy(passport);
 
 // Configure static assets
-// app.use(express.static(path.join(__dirname, "..", "client", "out")));
+const clientPath = path.join(__dirname, "client-dist");
+app.use(express.static(clientPath));
 
 // Routing begins
-app.get("/client", (req: Request, res: Response) => {
-  res.redirect((process.env.CLIENT_URL as string) || "/");
-});
+// app.get("/client", (req: Request, res: Response) => {
+//   res.redirect((process.env.CLIENT_URL as string) || "/");
+// });
 
-app.get("/api/test", (req: Request, res: Response) => {
-  res.json({ message: "Hello from express endpoint!" });
-});
+// app.get("/api/test", (req: Request, res: Response) => {
+//   res.json({ message: "Hello from express endpoint!" });
+// });
 
-app.get("/api/echo/:message", (req: Request, res: Response) => {
-  const { message } = req.params;
-  return res.status(200).json({ message });
-});
+// app.get("/api/echo/:message", (req: Request, res: Response) => {
+//   const { message } = req.params;
+//   return res.status(200).json({ message });
+// });
 
 // Configure authentication routes
 app.use("/api/auth", authRoutes);
@@ -126,8 +127,13 @@ app.use("/api/hotels", hotelRoutes);
 app.use("/api/slugs", slugRoutes);
 
 // Catch all route
-app.use("*", (req: Request, res: Response) => {
+app.use("/api/*", (req: Request, res: Response) => {
   return res.status(404).json({ message: "Resource not found" });
+});
+
+// Serve client for non-api routes
+app.use("*", (req: Request, res: Response) => {
+  res.sendFile(path.join(clientPath, "index.html"));
 });
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
